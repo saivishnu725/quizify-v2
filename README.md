@@ -23,7 +23,7 @@ A quiz site that can be used to create and host live quiz sessions
    npm i
    ```
 
-2. Create the local env files
+2. Create the local .env file
 
    ```bash
       NODE_ENV=development
