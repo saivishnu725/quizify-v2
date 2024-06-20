@@ -3,6 +3,8 @@ import express from "express";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import mongoose from 'mongoose';
+import { fileURLToPath } from "url";
+import path from "path";
 
 // import express routes
 import authRoutes from "./routes/auth.js";
@@ -26,17 +28,25 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 //path
-import { fileURLToPath } from "url";
-import { dirname } from "path";
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
+
+// Set EJS
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
+
+// Serve static files from the public directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// UI routes
+
+// GET: home page
+app.get('/', (req, res) => {
+    // TODO: check if token is present. if yes, send to /app
+    res.render('startpage');
+});
 
 // API routes
-app.get('/', (req, res) => {
-    res.json({
-        message: "Welcome to Quizify!"
-    });
-});
 
 // AUTH routes
 app.use("/api/auth", authRoutes);
