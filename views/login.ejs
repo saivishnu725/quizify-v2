@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Quizify | TUA</title>
+  <link rel="stylesheet" href="./css/globals.css" />
+  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+</head>
+
+<body>
+  <div class="bg-gradient-primary d-flex flex-column h-100" style="background-color:#202020">
+    <style>
+      body {
+        background-color: black;
+      }
+    </style>
+    <h3 class="text-white text-center mt-5">
+      Login to manage your Quizzes and create new ones!!
+    </h3>
+    <div class="container flex-grow-1">
+      <div class="row justify-content-center">
+        <div class="col-md-9 col-lg-12 col-xl-10">
+          <div class="card shadow-lg o-hidden border-0 my-5">
+            <div class="card-body p-0">
+              <div class="row">
+                <div class="col-lg-6 d-none d-lg-flex">
+                  <div class="flex-grow-1 bg-login-image" style=" background-image: url('images/login.png'); background-position:center; background-size: cover;">
+                  </div>
+                  <div class="col-lg-6">
+                    <div class="p-5">
+                      <div class="text-center">
+                        <h4 class="text-dark mb-4">
+                          Welcome Back! <br />
+                          Login to view your quizzes!!
+                        </h4>
+                      </div>
+                      <!-- login form -->
+                      <!-- {{/* TODO: onSubmit */}} -->
+                      <form class="user" onSubmit="handleLogin" method="post">
+                        <div class="mb-3">
+                          <input required class="form-control form-control-user" type="text" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address or Username" name="email" />
+                        </div>
+                        <div class="mb-3">
+                          <input required class="form-control form-control-user" type="password" id="exampleInputPassword" placeholder="Password" name="password" />
+                        </div>
+                        <div class="mb-3">
+                          <div class="custom-control custom-checkbox small">
+                            <div class="form-check">
+                              <input class="form-check-input custom-control-input" type="checkbox" id="remember-me" />
+                              <label class="form-check-label custom-control-label" htmlFor="remember-me">
+                                Remember Me
+                              </label>
+                            </div>
+                          </div>
+                        </div>
+                        <button class=" d-block btn-user w-100 buttonFilled home-register" type="submit">
+                          Login
+                        </button>
+                        <!-- temporarily hiding these options -->
+                        <!-- <div class="visually-hidden">
+                          <hr />
+                          <a class="btn btn-primary d-block btn-google btn-user w-100 mb-2" role="button"><i class="fab fa-google"></i>&nbsp; Login with
+                            Google</a><a class="btn btn-primary d-block btn-facebook btn-user w-100" role="button"><i class="fab fa-facebook-f"></i>&nbsp; Login with
+                            Facebook</a>
+                        </div> -->
+                        <hr />
+                      </form>
+                      <div class="text-center">
+                        <button class="btn btn-link small" onClick="()=>alert('Contact me to use a new password (only until I automate this process)')">
+                          Forgot Password?
+                        </button>
+                      </div>
+                      <div class="text-center">
+                        <button class="btn btn-link small" onClick="()=> (window.location.href = '/register')">
+                          New to the site? Register here!
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+
+</html>
