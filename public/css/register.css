@@ -1,0 +1,57 @@
+.divider:after,
+.divider:before {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #eee;
+}
+.h-custom {
+  height: calc(100% - 73px);
+}
+@media (max-width: 450px) {
+  .h-custom {
+    height: 100%;
+  }
+}
+
+/* Base styles for form-outline */
+.form-outline {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+
+.form-control {
+  width: 100%;
+  padding: 1.5rem 0.75rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  transition: border-color 0.3s;
+}
+
+/* Initial position of the label */
+.form-label {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  transform: translateY(-50%);
+  background-color: white;
+  padding: 0 0.25rem;
+  font-size: 1rem;
+  color: #6c757d;
+  transition: all 0.3s;
+}
+
+/* Focus styles for the input and label */
+.form-control:focus {
+  border-color: rgb(0, 195, 255);
+}
+
+.form-control:focus + .form-label,
+.form-control:not(:placeholder-shown) + .form-label {
+  top: -0.75rem;
+  left: 0.5rem;
+  font-size: 0.75rem;
+  color: black;
+  background-color: transparent;
+}
