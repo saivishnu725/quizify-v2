@@ -38,12 +38,21 @@ app.set('views', path.join(__dirname, 'views'));
 // Serve static files from the public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
+// bootstrap css
+app.use('/css/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+
 // UI routes
 
 // GET: home page
 app.get('/', (req, res) => {
     // TODO: check if token is present. if yes, send to /app
     res.render('startpage');
+});
+
+// GET: login page
+app.get('/login', (req, res) => {
+    // TODO: check if token is present. if yes, send to /app
+    res.render('login');
 });
 
 // API routes
