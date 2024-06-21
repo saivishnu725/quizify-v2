@@ -4,88 +4,103 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | Quizify | TUA</title>
+  <title>Login | Quizify TUA</title>
+
   <link rel="stylesheet" href="./css/globals.css" />
-  <link rel="stylesheet" href="/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="./css/login.css" />
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" />
 </head>
 
 <body>
-  <div class="bg-gradient-primary d-flex flex-column h-100" style="background-color:#202020">
-    <style>
-      body {
-        background-color: black;
-      }
-    </style>
-    <h3 class="text-white text-center mt-5">
-      Login to manage your Quizzes and create new ones!!
-    </h3>
-    <div class="container flex-grow-1">
-      <div class="row justify-content-center">
-        <div class="col-md-9 col-lg-12 col-xl-10">
-          <div class="card shadow-lg o-hidden border-0 my-5">
-            <div class="card-body p-0">
-              <div class="row">
-                <div class="col-lg-6 d-none d-lg-flex">
-                  <div class="flex-grow-1 bg-login-image" style=" background-image: url('images/login.png'); background-position:center; background-size: cover;">
-                  </div>
-                  <div class="col-lg-6">
-                    <div class="p-5">
-                      <div class="text-center">
-                        <h4 class="text-dark mb-4">
-                          Welcome Back! <br />
-                          Login to view your quizzes!!
-                        </h4>
-                      </div>
-                      <!-- login form -->
-                      <!-- {{/* TODO: onSubmit */}} -->
-                      <form class="user" onSubmit="handleLogin" method="post">
-                        <div class="mb-3">
-                          <input required class="form-control form-control-user" type="text" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Email Address or Username" name="email" />
-                        </div>
-                        <div class="mb-3">
-                          <input required class="form-control form-control-user" type="password" id="exampleInputPassword" placeholder="Password" name="password" />
-                        </div>
-                        <div class="mb-3">
-                          <div class="custom-control custom-checkbox small">
-                            <div class="form-check">
-                              <input class="form-check-input custom-control-input" type="checkbox" id="remember-me" />
-                              <label class="form-check-label custom-control-label" htmlFor="remember-me">
-                                Remember Me
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                        <button class=" d-block btn-user w-100 buttonFilled home-register" type="submit">
-                          Login
-                        </button>
-                        <!-- temporarily hiding these options -->
-                        <!-- <div class="visually-hidden">
-                          <hr />
-                          <a class="btn btn-primary d-block btn-google btn-user w-100 mb-2" role="button"><i class="fab fa-google"></i>&nbsp; Login with
-                            Google</a><a class="btn btn-primary d-block btn-facebook btn-user w-100" role="button"><i class="fab fa-facebook-f"></i>&nbsp; Login with
-                            Facebook</a>
-                        </div> -->
-                        <hr />
-                      </form>
-                      <div class="text-center">
-                        <button class="btn btn-link small" onClick="()=>alert('Contact me to use a new password (only until I automate this process)')">
-                          Forgot Password?
-                        </button>
-                      </div>
-                      <div class="text-center">
-                        <button class="btn btn-link small" onClick="()=> (window.location.href = '/register')">
-                          New to the site? Register here!
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+
+  <section class="vh-100">
+    <div class="container-fluid h-custom">
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-9 col-lg-6 col-xl-5">
+          <img src="images/login.png" class="img-fluid" alt="Login art-piece">
+        </div>
+        <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+          <form>
+            <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-center">
+              <p class="lead fw-normal mb-0 me-3">Sign in to manage quizzes!</p>
+              <!-- <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
+                <i class="fab fa-facebook-f"></i>
+              </button>
+
+              <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
+                <i class="fab fa-twitter"></i>
+              </button>
+
+              <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
+                <i class="fab fa-linkedin-in"></i>
+              </button> -->
             </div>
-          </div>
+
+            <div class="divider d-flex align-items-center my-4">
+              <!-- <p class="text-center fw-bold mx-3 mb-0">Or</p> -->
+            </div>
+
+            <!-- Email input -->
+            <div data-mdb-input-init class="form-outline mb-4">
+              <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="" />
+              <label class="form-label" for="email">Email address</label>
+            </div>
+
+            <!-- Password input -->
+            <div data-mdb-input-init class="form-outline mb-3">
+              <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="" />
+              <label class="form-label" for="password">Password</label>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center">
+              <!-- Checkbox -->
+              <div class="form-check mb-0">
+                <input class="form-check-input me-2" type="checkbox" value="" id="remember" name="remember" />
+                <label class="form-check-label" for="remember">
+                  Remember me
+                </label>
+              </div>
+              <!--  {{/* TODO: alert or create a new page */}} -->
+              <a href="#" class="text-body">Forgot password?</a>
+            </div>
+
+            <div class="text-center text-lg-start mt-4 pt-2">
+              <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+              <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/register" class="link-danger">Register</a></p>
+            </div>
+
+          </form>
         </div>
       </div>
     </div>
+    <div class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 bg-primary">
+      <!-- Copyright -->
+      <div class="text-white mb-3 mb-md-0">
+        © 2024
+        <a href="https://github.com/saivishnu725" class="text-white text-decoration-none">The Unconcerned Ape</a>,
+        Made with love.
+      </div>
+      <!-- Copyright -->
+
+      <!-- Right -->
+      <!-- <div>
+        <a href="#!" class="text-white me-4">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="#!" class="text-white me-4">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="#!" class="text-white me-4">
+          <i class="fab fa-google"></i>
+        </a>
+        <a href="#!" class="text-white">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </div> -->
+      <!-- Right -->
+    </div>
+  </section>
+  <script src="./js/login.js" />
 </body>
 
 </html>
