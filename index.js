@@ -55,6 +55,12 @@ app.get('/login', (req, res) => {
     res.render('login');
 });
 
+// GET: register page
+app.get('/register', (req, res) => {
+    // TODO: check if token is present. if yes, send to /app
+    res.render('register');
+});
+
 // API routes
 
 // AUTH routes
