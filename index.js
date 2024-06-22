@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import mongoose from 'mongoose';
 import { fileURLToPath } from "url";
 import path from "path";
+import cookieSession from 'cookie-session';
 
 // import express routes
 import authRoutes from "./routes/auth.js";
@@ -41,24 +42,41 @@ app.use(express.static(path.join(__dirname, 'public')));
 // bootstrap css
 app.use('/css/bootstrap', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 
+// Cookies manager
+app.use(cookieSession({
+    name: 'session',
+    keys: [process.env.COOKIE_KEY],
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}));
+
 // UI routes
 
 // GET: home page
 app.get('/', (req, res) => {
-    // TODO: check if token is present. if yes, send to /app
-    res.render('startpage');
+    // check if token is present. if yes, send to /app
+    if (req.session.token)
+        res.redirect('/app');
+    else
+        res.render('startpage');
 });
 
 // GET: login page
 app.get('/login', (req, res) => {
-    // TODO: check if token is present. if yes, send to /app
-    res.render('login');
+    console.log('Token: ', req.session.token);
+    // check if token is present. if yes, send to /app
+    if (req.session.token)
+        res.redirect('/app');
+    else
+        res.render('login');
 });
 
 // GET: register page
 app.get('/register', (req, res) => {
-    // TODO: check if token is present. if yes, send to /app
-    res.render('register');
+    // check if token is present. if yes, send to /app
+    if (req.session.token)
+        res.redirect('/app');
+    else
+        res.render('register');
 });
 
 // API routes
