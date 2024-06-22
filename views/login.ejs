@@ -20,7 +20,7 @@
           <img src="images/login.png" class="img-fluid" alt="Login art-piece">
         </div>
         <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-          <form>
+          <form id="login-form">
             <div class="d-flex flex-row align-items-center justify-content-center justify-content-lg-center">
               <p class="lead fw-normal mb-0 me-3">Sign in to manage quizzes!</p>
               <!-- <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-floating mx-1">
@@ -44,12 +44,14 @@
             <div data-mdb-input-init class="form-outline mb-4">
               <input type="email" id="email" name="email" class="form-control form-control-lg" placeholder="" />
               <label class="form-label" for="email">Email address</label>
+              <div id="email-error" class="error"></div>
             </div>
 
             <!-- Password input -->
             <div data-mdb-input-init class="form-outline mb-3">
               <input type="password" id="password" name="password" class="form-control form-control-lg" placeholder="" />
               <label class="form-label" for="password">Password</label>
+              <div id="password-error" class="error"></div>
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
@@ -65,7 +67,7 @@
             </div>
 
             <div class="text-center text-lg-start mt-4 pt-2">
-              <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
+              <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary btn-lg" style="padding-left: 2.5rem; padding-right: 2.5rem;">Login</button>
               <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/register" class="link-danger">Register</a></p>
             </div>
 
@@ -100,7 +102,7 @@
       <!-- Right -->
     </div>
   </section>
-  <script src="./js/login.js" />
+  <script src="./js/login.js"></script>
 </body>
 
 </html>
