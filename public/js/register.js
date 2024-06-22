@@ -115,6 +115,7 @@ document.getElementById('register-form').addEventListener('submit', function (ev
         console.log('Response received: ', data);
         if (data.token) {
           console.log('Token received: ', data.token);
+          window.location.href = '/app';
         } else {
           console.error('Error in token received:', data);
         }
