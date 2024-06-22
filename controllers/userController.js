@@ -2,14 +2,16 @@ import { compare, genSalt, hash } from "bcrypt";
 import jwt from "jsonwebtoken";
 const { sign } = jwt;
 import User from "../models/user.js"; // Import the User model
+import dotenv from 'dotenv';
+dotenv.config();
 
-const secret = process.env.JWT_TOKEN || "secret";
+const secret = process.env.JWT_SECRET || "secret";
 
 // Function to handle user login
 export async function login(req, res) {
     console.log("/login: ", req.body);
-    const { email, password } = req.body;
-    console.log(email, password);
+    const { email, password, remember } = req.body;
+    console.log(email, password, remember);
     try {
         console.log("Finding user by email");
         // Find user by email
@@ -36,9 +38,16 @@ export async function login(req, res) {
 
         console.log("Creating token");
         // Create JWT token
-        const token = sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: "1h",
-        });
+        let token = "";
+        if (remember) {
+            token = sign({ id: user.id }, secret, {
+                expiresIn: "5d",
+            });
+        } else {
+            token = sign({ id: user.id }, secret, {
+                expiresIn: "1h",
+            });
+        }
 
         // add it to the cookie
         req.session.token = token;
@@ -77,7 +86,7 @@ export async function register(req, res) {
             password,
         });
 
-        console.log(user);
+        console.log("User:", user);
 
         // Hash password
         const salt = await genSalt(10);
@@ -87,7 +96,7 @@ export async function register(req, res) {
         await user.save();
 
         // Create JWT token
-        const token = sign({ id: user._id }, process.env.JWT_SECRET, {
+        const token = sign({ id: user.id }, secret, {
             expiresIn: "1h",
         });
 
@@ -103,3 +112,42 @@ export async function register(req, res) {
         res.status(500).send(`Server Error\n\n ${err.message}`);
     }
 }
+
+
+// Function to handle token checking
+export const checkTokenAndRedirect = (req, res, next) => {
+    const token = req.session.token;
+
+    if (token) {
+        console.log("Token found", token);
+        return res.redirect('/app');
+    }
+
+    jwt.verify(token, secret, (err, user) => {
+        if (err) {
+            console.error("Error in authToken: ", err.message);
+            // return res.redirect('/login'); // Redirect to login if token is invalid
+        }
+
+        req.user = user; // Save user information to request object
+        next(); // Call the next middleware or route handler
+    });
+};
+
+export const authenticateToken = (req, res, next) => {
+    const token = req.session.token;
+
+    if (!token) {
+        return res.redirect('/login'); // Redirect to login if no token is found
+    }
+
+    jwt.verify(token, secret, (err, user) => {
+        if (err) {
+            console.error("Error in authToken: ", err.message);
+            return res.redirect('/login'); // Redirect to login if token is invalid
+        }
+
+        req.user = user; // Save user information to request object
+        next(); // Call the next middleware or route handler
+    });
+};
