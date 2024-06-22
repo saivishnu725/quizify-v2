@@ -9,6 +9,7 @@ import cookieSession from 'cookie-session';
 
 // import express routes
 import authRoutes from "./routes/auth.js";
+import frontendRoutes from "./routes/frontend.js";
 
 // .env config
 dotenv.config();
@@ -50,35 +51,7 @@ app.use(cookieSession({
 }));
 
 // UI routes
-
-// GET: home page
-app.get('/', (req, res) => {
-    // check if token is present. if yes, send to /app
-    if (req.session.token)
-        res.redirect('/app');
-    else
-        res.render('startpage');
-});
-
-// GET: login page
-app.get('/login', (req, res) => {
-    console.log('Token: ', req.session.token);
-    // check if token is present. if yes, send to /app
-    if (req.session.token)
-        res.redirect('/app');
-    else
-        res.render('login');
-});
-
-// GET: register page
-app.get('/register', (req, res) => {
-    // check if token is present. if yes, send to /app
-    if (req.session.token)
-        res.redirect('/app');
-    else
-        res.render('register');
-});
-
+app.use("/", frontendRoutes);
 // API routes
 
 // AUTH routes
