@@ -40,7 +40,9 @@ export async function login(req, res) {
             expiresIn: "1h",
         });
 
-        // TODO: add it to the cookie
+        // add it to the cookie
+        req.session.token = token;
+
         // Return token
         console.log("Token: ", token);
         console.log("Returning token");
@@ -89,9 +91,11 @@ export async function register(req, res) {
             expiresIn: "1h",
         });
 
-        // TODO: save token in the cookie
+        // save token in the cookie
+        req.session.token = token;
 
         // Return token
+        console.log("\nToken: ", token);
         res.status(200).json({ token });
     } catch (err) {
         // Handle any errors
