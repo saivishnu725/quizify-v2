@@ -5,7 +5,7 @@ import { login, register } from "../controllers/userController.js";
 // Login route
 router.post("/login", login);
 
-// Login route
+// Register route
 router.post("/register", register);
 
 export default router;
