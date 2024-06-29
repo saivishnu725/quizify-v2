@@ -10,6 +10,7 @@ import cookieSession from 'cookie-session';
 // import express routes
 import authRoutes from "./routes/auth.js";
 import frontendRoutes from "./routes/frontend.js";
+import dataRoutes from "./routes/data.js";
 
 // .env config
 dotenv.config();
@@ -52,8 +53,9 @@ app.use(cookieSession({
 
 // UI routes
 app.use("/", frontendRoutes);
-// API routes
 
+// API routes
+app.use("/api", dataRoutes);
 // AUTH routes
 app.use("/api/auth", authRoutes);
 
