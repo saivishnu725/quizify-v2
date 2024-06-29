@@ -9,8 +9,19 @@
 
 <body>
   <div class="container mt-5">
-    <h1>Create Quiz</h1>
+    <p>Create a new quiz with multiple-choice, true/false, or 4-option questions.</p>
     <form id="quiz-form" action="/api/create-quiz" method="POST">
+      <h3>Quiz Details</h3>
+      <div class="form-group">
+        <label for="title">Title: </label>
+        <input type="text" class="form-control" id="title" name="title" required>
+      </div>
+      <br>
+      <div class="form-group">
+        <label for="description">Description: </label>
+        <textarea class="form-control" id="description" name="description" rows="1"></textarea>
+      </div>
+      <h3>Quiz Questions</h3>
       <div id="quizContainer">
         <div class="quiz mb-4" id="quiz1">
           <br>
