@@ -45,7 +45,7 @@ export async function login(req, res) {
             });
         } else {
             token = sign({ id: user.id }, secret, {
-                expiresIn: "1h",
+                expiresIn: "1d",
             });
         }
 
