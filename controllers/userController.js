@@ -126,7 +126,6 @@ export const checkTokenAndRedirect = (req, res, next) => {
     jwt.verify(token, secret, (err, user) => {
         if (err) {
             console.error("Error in authToken: ", err.message);
-            // return res.redirect('/login'); // Redirect to login if token is invalid
         }
 
         req.user = user; // Save user information to request object
