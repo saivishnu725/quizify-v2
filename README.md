@@ -9,6 +9,8 @@ A quiz site that can be used to create and host live quiz sessions
 1. [NodeJS](https://nodejs.org/en)
 2. [NPM](https://npmjs.com)
 3. [Web Browser](https://www.mozilla.org/en-US/firefox/new/)
+4. [MariaDB](https://mariadb.org/)
+5. [MongoDB](https://www.mongodb.com/)
 
 ## Resources
 
@@ -17,13 +19,32 @@ A quiz site that can be used to create and host live quiz sessions
 
 ## How to run it locally
 
-1. Install node dependencies
+1. Setup MariaDB and MongoDB
+
+   1. create the mariadb database using the `mariadb-init.sql` file
+
+      ```bash
+         mariadb -u username -p
+         # create the database
+         CREATE DATABASE IF NOT EXISTS quizify;
+         exit
+
+         mariadb -u username -p quizify < ./database-init/mariadb-init.sql
+      ```
+
+   2. create the MongoDB database using the `mongo-init.sql` file
+
+      ```bash
+         mongosh < ./database-init/mongo-init.js
+      ```
+
+2. Install node dependencies
 
    ```bash
    npm i
    ```
 
-2. Create the local .env file
+3. Create the local .env file
 
    ```bash
       NODE_ENV=development
@@ -37,13 +58,13 @@ A quiz site that can be used to create and host live quiz sessions
       JWT_SECRET=your_jwt_secret
    ```
 
-3. Run the Server
+4. Run the Server
 
    ```bash
       npm run dev
    ```
 
-4. Open the website that is running on [http://localhost:4000](http://localhost:4000)
+5. Open the website that is running on [http://localhost:4000](http://localhost:4000)
 
    ```bash
       firefox http://localhost:4000 # for firefox users
