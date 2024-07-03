@@ -14,11 +14,16 @@ const questionSchema = new Schema({
 
 const quizSchema = new Schema({
     quiz_id: Number, // Reference to Quizzes
-    title: String,
-    description: String,
+    quiz_tag: { type: String, required: true },
+    title: { type: String, required: true },
+    description: { type: String, required: true },
+    maxTime: { type: Number, required: true },
+    maxPlayers: { type: Number, required: true },
+    score: { type: Number, required: true },
+    negativeScore: { type: Number, required: true },
+    joinTime: { type: Number, required: true },
     questions: [questionSchema],
-    // user_id: { type: Schema.Types.ObjectId, ref: 'User' },
-    user_id: Number,
+    user_id: Number
 });
 
 const QuizCollection = model('QuizzesCollection', quizSchema);
