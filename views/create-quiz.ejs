@@ -21,6 +21,56 @@
         <label for="description">Description: </label>
         <textarea class="form-control" id="description" name="description" rows="1"></textarea>
       </div>
+      <!--  
+      Max time per question or overall quiz.
+Max players allowed.
+Score per correct answer.
+Negative scoring for wrong answers (if applicable).
+Time frame for joining the quiz.
+Randomization of questions.
+      -->
+      <br>
+      <div class="form-group">
+        <label for="max-time">
+          Max Time per Question (in seconds):
+        </label>
+        <input type="number" class="form-control" id="max-time" name="maxTime" required>
+      </div>
+
+      <br>
+      <div class="form-group">
+        <label for="max-players">
+          Max Players Allowed:
+        </label>
+        <input type="number" class="form-control" id="max-players" name="maxPlayers" required>
+      </div>
+
+      <br>
+      <div class="form-group">
+        <label for="score">
+          Score per Correct Answer:
+        </label>
+        <input type="number" class="form-control" id="score" name="score" required>
+      </div>
+
+      <br>
+      <div class="form-group">
+        <label for="negative-score">
+          Negative Scoring for Wrong Answers:
+        </label>
+        <input type="number" class="form-control" id="negative-score" name="negativeScore" step="0.01" required>
+      </div>
+
+      <!-- {{/* TODO: time frame input  */}} -->
+      <br>
+      <div class="form-group visually-hidden">
+        <label for="join-time">
+          Time Frame for Joining the Quiz (in seconds):
+        </label>
+        <input type="number" class="form-control" id="join-time" name="joinTime" required>
+      </div>
+
+      <br>
       <h3>Quiz Questions</h3>
       <div id="quizContainer">
         <div class="quiz mb-4" id="quiz1">
