@@ -12,7 +12,6 @@ router.get('/', checkTokenAndRedirect, (req, res) => {
 // GET: app page
 router.get('/app', authenticateToken, async (req, res) => {
     console.log('User.id in /app: ', req.user);
-    // TODO: get user details based on user.id
     const user = await getUserDetails(req.user.id);
     console.log('User details in /app: ', user);
     res.render("home", { user: user });
