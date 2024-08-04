@@ -67,7 +67,9 @@ export async function saveQuiz(quizData, userId) {
                     option_id: idx + 1,
                     option_text: opt,
                     is_correct: q.correctOption === idx.toString(),
+
                 })),
+                correctOption: q.correctOption,
             })),
             user_id: userId,
         });
@@ -82,3 +84,23 @@ export async function saveQuiz(quizData, userId) {
         console.error('Error saving quiz in mongo:', error);
     }
 };
+
+// Get quiz details
+export async function getQuizDetails(quizTag) {
+    try {
+        // 1. Retrieve the quiz from MariaDB
+        const quiz = await Quiz.findOne({ where: { quizTag: quizTag } });
+        if (!quiz) {
+            return 'Quiz not found';
+        }
+        // 2. Retrieve the quiz from MongoDB
+        const quizCollection = await QuizCollection.findOne({ quiz_tag: quizTag });
+        if (!quizCollection) {
+            return 'Quiz collection not found';
+        }
+
+        return quizCollection;
+    } catch (error) {
+        console.error('Error retrieving quiz details:', error);
+    }
+}

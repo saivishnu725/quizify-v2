@@ -1,7 +1,14 @@
 import { Router } from "express";
-const router = Router();
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { checkTokenAndRedirect, authenticateToken } from "../controllers/userController.js";
-import { getUserDetails } from "../controllers/dataController.js";
+import { getUserDetails, getQuizDetails } from "../controllers/dataController.js";
+
+const router = Router();
+dotenv.config();
+
+const secret = process.env.JWT_SECRET || "secret";
+
 
 // GET: home page
 router.get('/', checkTokenAndRedirect, (req, res) => {
@@ -45,11 +52,53 @@ router.get('/create-quiz', async (req, res) => {
     } else
         res.redirect('/');
 });
+// TODO: Get: quiz
+router.get('/quiz/:quiz_id', async (req, res) => {
+    console.log('Preview request for quiz: ', req.params.quiz_id);
+    try {
+        const quizId = req.params.quiz_id;
+
+        // get userID
+        console.log("Token: ", req.session.token);
+        if (req.session.token) {
+
+            let userInfo = {};
+            jwt.verify(req.session.token, secret, (err, user) => {
+                if (err)
+                    console.error("Error in jwtTokenVerify: ", err.message);
+                console.log("User:", user);
+                userInfo = user || {};
+            });
+            console.log("UserID: ", userInfo.id);
+            const userId = userInfo.id;
+
+            // TODO: get quiz details
+            const quiz = await getQuizDetails(quizId);
+            console.log('Quiz details in /quiz/:quiz_id: ', quiz);
+
+            if (quiz == 'Quiz not found' || quiz == 'Quiz collection not found')
+                res.status(404).json({ message: 'Quiz not found' });
+            else {
+                const isHost = quiz.user_id === userId;
+                if (isHost)
+                    res.render('quiz-preview', { quiz, isHost });
+                else
+                    res.render('quiz-details', { quiz: quiz, isHost: false });
+            }
+
+        } else
+            res.redirect('/login');
+    } catch (error) {
+        console.error('Error fetching quiz details:', error);
+        return res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+
 
 // TODO: Get: settings
 // TODO: Get: 404 Not Found
 // TODO: Get: user profile
-// TODO: Get: quiz
 // TODO: Get: quiz-results
 
 export default router;

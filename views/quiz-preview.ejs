@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Quiz Preview - Host</title>
+</head>
+
+<body>
+  <div>
+    <h1><%= quiz.title %></h1>
+    <p><%= quiz.description %></p>
+    <% quiz.questions.forEach((q, index) => { %>
+    <div>
+      <p>Question <%= index + 1 %>: <%= q.question_text %></p>
+      <ul>
+        <% if (q.question_type == 'true-false') { %>
+        <% if(q.correctOption == '0') { %>
+        <li> True </li>
+        <% } else if(q.correctOption == '1') {%>
+        <li> False </li>
+        <% }%>
+        <% } else if (q.question_type === '4-options' || q.question_type === '2-options') { %>
+        <% q.options.forEach((opt, idx) => { %>
+        <li style="<%= q.correctOption == idx.toString() ? 'color: green;' : '' %>">
+          Option <%= idx + 1 %>: <%= opt.option_text %>
+        </li>
+        <% }); %>
+        <% } %>
+      </ul>
+    </div>
+    <% }); %>
+  </div>
+</body>
+
+</html>

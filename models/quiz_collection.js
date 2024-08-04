@@ -7,9 +7,11 @@ const optionSchema = new Schema({
 });
 
 const questionSchema = new Schema({
+    question_type: { type: String, required: true },
     question_id: Number,
     question_text: String,
     options: [optionSchema],
+    correctOption: Number,
 });
 
 const quizSchema = new Schema({
