@@ -9,7 +9,6 @@ dotenv.config();
 const secret = process.env.JWT_SECRET || "secret";
 
 // TODO: get: user info route
-// router.post("/user-info", method);
 
 // TODO: post: create quiz
 router.post("/create-quiz", async (req, res) => {
