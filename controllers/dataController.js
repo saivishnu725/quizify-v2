@@ -1,5 +1,5 @@
 import User from "../models/user.js"; // Import the User model
-import QuizCollection from "../models/quiz_collection.js"; // Import the QuizCollection model | stores the entire quiz
+import QuizCollection from "../models/quizCollection.js"; // Import the QuizCollection model | stores the entire quiz
 import Quiz from "../models/quiz.js"; // Import the Quiz model | stores the basic quiz details
 
 // Get user details
