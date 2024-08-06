@@ -67,7 +67,6 @@ router.post('/submit-quiz', async (req, res) => {
         let userAnswers = [];
         try {
             userAnswers = quiz.questions.map((q, index) => {
-                // console.log('q:', q);
                 console.log('answers[index]:', answers[index]);
                 const correct = q.correctOption === parseInt(answers[index]);
                 if (correct) correctAnswersCount++;
@@ -88,30 +87,57 @@ router.post('/submit-quiz', async (req, res) => {
 
         // 4. Save data in UserQuiz
         try {
-            const userQuiz = await UserQuiz.create({
-                user_id: userId,
-                quiz_at: quiz.quiz_id
+            let userQuiz = await UserQuiz.findOne({
+                where: { user_id: userId, quiz_at: quiz.quiz_id }
             });
+
+            if (userQuiz) {
+                // Update existing record
+                userQuiz.joined_at = new Date(); // Update the timestamp
+                await userQuiz.save();
+            } else {
+                // Create new record
+                userQuiz = await UserQuiz.create({
+                    user_id: userId,
+                    quiz_at: quiz.quiz_id,
+                    quiz_tag: quizTag
+                });
+                console.log('UserQuiz:', userQuiz);
+            }
         } catch (error) {
-            console.error("Error in saving userQuiz in UserQuiz collection:", error);
+            console.error("Error in saving or updating UserQuiz:", error);
             res.status(500).json({ message: "Internal server error", error: error });
             return;  // won't continue
         }
 
-        // 5. Save data in UserQuizAnswersCollection
+        // 5. Update or Replace in UserQuizAnswersCollection
         try {
-            const userQuizAnswers = new UserQuizAnswersCollection({
+            // Find the previous attempt
+            let userQuizAnswers = await UserQuizAnswersCollection.findOne({
+                user_id: userId,
+                quiz_id: quiz.quiz_id
+            });
+
+            if (userQuizAnswers) {
+                // Remove the previous document
+                await UserQuizAnswersCollection.deleteOne({ _id: userQuizAnswers._id });
+            }
+
+            // Save new attempt
+            userQuizAnswers = new UserQuizAnswersCollection({
                 user_id: userId,
                 quiz_id: quiz.quiz_id,
-                answers: userAnswers
+                answers: userAnswers,
+                quiz_tag: quizTag
             });
             console.log('UserQuizAnswers:', userQuizAnswers);
             await userQuizAnswers.save();
         } catch (error) {
-            console.error("Error in saving userQuizAnswers in UserQuizAnswersCollection:", error);
+            console.error("Error in saving or updating UserQuizAnswersCollection:", error);
             res.status(500).json({ message: "Internal server error", error: error });
             return;  // won't continue
         }
+
         // 6. Wrap the final result into JSON and redirect to quiz-result
         const result = {
             questionsCount: totalQuestions,
@@ -121,7 +147,10 @@ router.post('/submit-quiz', async (req, res) => {
             quizTitle: quiz.title
         };
 
-        res.status(200).json(result);
+        // res.status(200).json(result);
+        // redirect to the result page
+        req.session.quizResult = result;
+        res.redirect('/results/');
 
     } catch (error) {
         console.error("Error in submitting quiz:", error);
