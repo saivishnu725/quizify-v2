@@ -110,11 +110,27 @@ router.get('/participate/:quiz_id', async (req, res) => {
     }
 });
 
+// TODO: Get: quiz-results
+router.get('/results', (req, res) => {
+
+    // check if token is quiz results.if yes, send to / app
+    if (req.session.quizResults) {
+        console.log('quizResults received: ', req.session.quizResult);
+        const quizResult = req.session.quizResult;
+        res.render('quiz-results', {
+            questionsCount: quizResult.questionsCount,
+            correctQuestions: quizResult.correctQuestions,
+            wrongQuestions: quizResult.wrongQuestions,
+            finalPercentage: quizResult.finalPercentage,
+            quizTitle: quizResult.quizTitle
+        });
+    } else
+        res.redirect('/');
+});
 
 
 // TODO: Get: settings
 // TODO: Get: 404 Not Found
 // TODO: Get: user profile
-// TODO: Get: quiz-results
 
 export default router;
