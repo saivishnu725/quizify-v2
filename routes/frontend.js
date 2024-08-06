@@ -94,6 +94,22 @@ router.get('/quiz/:quiz_id', async (req, res) => {
     }
 });
 
+// Get quiz participation page
+router.get('/participate/:quiz_id', async (req, res) => {
+    try {
+        const quizId = req.params.quiz_id;
+        const quiz = await getQuizDetails(quizId);
+        console.log('Quiz details in /participate/:quiz_id: ', quiz);
+        if (quiz === 'Quiz not found' || quiz === 'Quiz collection not found') {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+        res.render('participate', { quiz });
+    } catch (error) {
+        console.error('Error fetching quiz participation page:', error);
+        return res.status(500).json({ message: 'Internal server error', error: error });
+    }
+});
+
 
 
 // TODO: Get: settings
