@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Quiz Results</title>
+  <style>
+    .result-container {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    .result-item {
+      margin: 20px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="result-container">
+    <h1>Quiz Results</h1>
+    <h2><%= quizTitle %></h2>
+    <div class="result-item">
+      <strong>Total Questions:</strong> <%= questionsCount %>
+    </div>
+    <div class="result-item">
+      <strong>Correct Answers:</strong> <%= correctQuestions %>
+    </div>
+    <div class="result-item">
+      <strong>Wrong Answers:</strong> <%= wrongQuestions %>
+    </div>
+    <div class="result-item">
+      <strong>Final Percentage:</strong> <%= finalPercentage %>%
+    </div>
+  </div>
+</body>
+
+</html>
