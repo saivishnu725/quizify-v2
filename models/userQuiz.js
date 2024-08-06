@@ -14,6 +14,7 @@ const UserQuiz = sequelize.define('user_quizzes', {
     id: { type: DataTypes.BIGINT.UNSIGNED, primaryKey: true, autoIncrement: true },
     user_id: { type: DataTypes.BIGINT, allowNull: false },
     quiz_at: { type: DataTypes.BIGINT, allowNull: false },
+    quiz_tag: { type: DataTypes.STRING, allowNull: false },
     joined_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW }
 }, {
     indexes: [

@@ -10,6 +10,7 @@ const answerSchema = new Schema({
 const userQuizAnswersSchema = new Schema({
     user_id: { type: Number, required: true }, // Reference to Users
     quiz_id: { type: Number, required: true }, // Reference to Quizzes
+    quiz_tag: { type: String, required: true },  // References to Quizzes
     answers: { type: [answerSchema], required: true }
 });
 
