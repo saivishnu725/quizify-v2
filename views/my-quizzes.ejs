@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>My Quizzes</title>
+</head>
+
+<body>
+  <div>
+    <% if (quizzes.length === 0) { %>
+    <p>You haven't created any quizzes yet.</p>
+    <% } else { %>
+    <h1>My Quizzes</h1>
+    <ul>
+      <% quizzes.forEach(quiz => { %>
+      <li>
+        Title: <a href="/quiz/<%= quiz.quizTag %>"><%= quiz.title %></a>
+        <br />
+        <p> Description: <%= quiz.description %></p>
+        <a href="/quiz/<%= quiz.quizTag %>/results">View Results</a>
+        <br />
+      </li>
+      <hr>
+      <% }); %>
+    </ul>
+    <% } %>
+  </div>
+</body>
+
+</html>
