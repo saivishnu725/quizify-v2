@@ -52,7 +52,7 @@ router.get('/create-quiz', async (req, res) => {
     } else
         res.redirect('/');
 });
-// TODO: Get: quiz
+// Get: quiz
 router.get('/quiz/:quiz_id', async (req, res) => {
     console.log('Preview request for quiz: ', req.params.quiz_id);
     try {
@@ -94,7 +94,7 @@ router.get('/quiz/:quiz_id', async (req, res) => {
     }
 });
 
-// Get quiz participation page
+// Get: quiz participation page
 router.get('/participate/:quiz_id', async (req, res) => {
     try {
         const quizId = req.params.quiz_id;
@@ -110,7 +110,7 @@ router.get('/participate/:quiz_id', async (req, res) => {
     }
 });
 
-// TODO: Get: quiz-results
+// Get: quiz-results
 router.get('/results', (req, res) => {
 
     // check if token is quiz results.if yes, send to / app
@@ -128,6 +128,7 @@ router.get('/results', (req, res) => {
         res.redirect('/');
 });
 
+// Get: user quiz list
 
 // TODO: Get: settings
 // TODO: Get: 404 Not Found
