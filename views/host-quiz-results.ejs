@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Quiz Results - Host</title>
+</head>
+
+<body>
+  <div>
+    <h1>Quiz Results: <%= quiz.title %></h1>
+    <p><%= quiz.description %></p>
+
+    <h2>Overall Results</h2>
+    <p>Correct Answers: <%= totalCorrect %></p>
+    <p>Wrong Answers: <%= totalWrong %></p>
+
+    <h2>Participants</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>User ID</th>
+          <th>Correct Answers</th>
+          <th>Wrong Answers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% participants.forEach(participant => { %>
+        <tr>
+          <td><%= participant.user_id %></td>
+          <td><%= participant.correct %></td>
+          <td><%= participant.wrong %></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+</body>
+
+</html>

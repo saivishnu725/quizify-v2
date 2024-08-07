@@ -4,6 +4,8 @@ import dotenv from 'dotenv';
 import { checkTokenAndRedirect, authenticateToken } from "../controllers/userController.js";
 import { getUserDetails, getQuizDetails } from "../controllers/dataController.js";
 import Quiz from "../models/quiz.js";
+import QuizCollection from "../models/quizCollection.js";
+import UserQuizAnswersCollection from "../models/userQuizAnswersCollection.js";
 
 const router = Router();
 dotenv.config();
@@ -159,6 +161,92 @@ router.get('/my-quizzes', async (req, res) => {
     } catch (error) {
         console.error('Error fetching user quizzes:', error);
         res.status(500).json({ message: 'Internal server error', error: error });
+    }
+});
+
+// Get: overall result of quizzes created by the user
+router.get('/quiz/:quizTag/results', async (req, res) => {
+    try {
+        const quizTag = req.params.quizTag;
+
+        if (!req.session.token) {
+            return res.redirect('/login');
+        }
+
+        let userInfo = {};
+        try {
+            jwt.verify(req.session.token, secret, (err, user) => {
+                if (err) {
+                    console.error("Error in jwtTokenVerify: ", err.message);
+                    return res.redirect('/login');
+                }
+                userInfo = user || {};
+            });
+        } catch (err) {
+            console.error('Error in jwtTokenVerify: ', err.message);
+            delete req.session.token; // remove faulty / expired token from session
+            return res.redirect('/login');
+        }
+
+        const userId = userInfo.id;
+        console.log("UserID: ", userId);
+
+        // Fetch quiz details
+        const quiz = await Quiz.findOne({ where: { quizTag: quizTag } });
+        if (!quiz) {
+            return res.status(404).json({ message: 'Quiz not found' });
+        }
+
+        // if the user is not the creator of the quiz, redirect to /app
+        if (quiz.creator_id !== userId) {
+            return res.redirect('/app');
+        }
+
+        // Fetch quiz collection
+        const quizCollection = await QuizCollection.findOne({ quiz_tag: quizTag });
+        if (!quizCollection) {
+            return res.status(404).json({ message: 'Quiz collection not found' });
+        }
+
+        // Fetch quiz results from your results table (assuming a UserQuizAnswersCollection table exists)
+        const quizResults = await UserQuizAnswersCollection.find({ quiz_tag: quizTag });
+
+        // Calculate overall correct and wrong answers
+        let totalCorrect = 0;
+        let totalWrong = 0;
+        const participants = [];
+
+        quizResults.forEach(result => {
+            let correctCount = 0;
+            let wrongCount = 0;
+            result.answers.forEach(answer => {
+                const question = quizCollection.questions.find(q => q.question_id === answer.question_id);
+                if (question && question.correctOption === answer.selected_option_id) {
+                    correctCount++;
+                    totalCorrect++;
+                } else {
+                    wrongCount++;
+                    totalWrong++;
+                }
+            });
+
+            participants.push({
+                user_id: result.user_id,
+                correct: correctCount,
+                wrong: wrongCount
+            });
+        });
+
+        res.render('host-quiz-results', {
+            quiz: quizCollection,
+            totalCorrect,
+            totalWrong,
+            participants,
+            isHost: true
+        });
+    } catch (error) {
+        console.error('Error fetching quiz results:', error);
+        return res.status(500).json({ message: 'Internal server error', error: error });
     }
 });
 
