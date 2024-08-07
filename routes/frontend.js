@@ -3,6 +3,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import { checkTokenAndRedirect, authenticateToken } from "../controllers/userController.js";
 import { getUserDetails, getQuizDetails } from "../controllers/dataController.js";
+import Quiz from "../models/quiz.js";
 
 const router = Router();
 dotenv.config();
@@ -129,6 +130,37 @@ router.get('/results', (req, res) => {
 });
 
 // Get: user quiz list
+router.get('/my-quizzes', async (req, res) => {
+    try {
+        // redirect to /login if token is not found
+        if (!req.session.token)
+            return res.redirect('/login');
+
+        let userInfo = {};
+        try {
+            jwt.verify(req.session.token, secret, (err, user) => {
+                if (err) {
+                    console.error("Error in jwtTokenVerify: ", err.message);
+                    return res.redirect('/login');
+                }
+                userInfo = user || {};
+            });
+        } catch (err) {
+            console.error('Error in jwtTokenVerify: ', err.message);
+            delete req.session.token; // remove faulty/expired token from session
+            return res.redirect('/login');
+        }
+        const userId = userInfo.id;
+
+        // Fetch quizzes created by the user from MariaDB
+        const quizzes = await Quiz.findAll({ where: { creator_id: userId } });
+
+        res.render('my-quizzes', { quizzes });
+    } catch (error) {
+        console.error('Error fetching user quizzes:', error);
+        res.status(500).json({ message: 'Internal server error', error: error });
+    }
+});
 
 // TODO: Get: settings
 // TODO: Get: 404 Not Found
