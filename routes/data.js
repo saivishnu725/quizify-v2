@@ -2,9 +2,12 @@ import jwt from 'jsonwebtoken';
 import { Router } from "express";
 import dotenv from 'dotenv';
 import { saveQuiz } from '../controllers/dataController.js';
+
+// models
 import UserQuiz from '../models/userQuiz.js';
 import UserQuizAnswersCollection from '../models/userQuizAnswersCollection.js';
 import QuizCollection from '../models/quizCollection.js';
+import User from '../models/user.js';
 
 const router = Router();
 dotenv.config();
@@ -26,10 +29,19 @@ router.post("/create-quiz", async (req, res) => {
         userInfo = user || {};
     });
     console.log("UserID: ", userInfo.id);
+
     // save the quiz
     const { quizTag, quizId } = await saveQuiz(req.body, userInfo.id);
     console.log("Quiz ID: ", quizId);
     console.log("Quiz Tag: ", quizTag);
+
+    // Increment quiz_created column in Users table
+    const user = await User.findOne({ where: { id: userInfo.id } });
+    if (user) {
+        user.quiz_created += 1;
+        await user.save();
+    }
+
     res.status(201).json({ message: "Quiz created successfully", quiz: req.body, userID: userInfo.id, quizId: quizId, quizTag: quizTag });
 });
 
