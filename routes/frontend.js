@@ -1,8 +1,12 @@
 import { Router } from "express";
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+
+// controllers
 import { checkTokenAndRedirect, authenticateToken } from "../controllers/userController.js";
-import { getUserDetails, getQuizDetails } from "../controllers/dataController.js";
+import { getUserDetails, getQuizDetails, getAvailableQuizzes, getCreatedQuizzes, getParticipatedQuizzes } from "../controllers/dataController.js";
+
+// models
 import Quiz from "../models/quiz.js";
 import QuizCollection from "../models/quizCollection.js";
 import UserQuizAnswersCollection from "../models/userQuizAnswersCollection.js";
@@ -20,12 +24,51 @@ router.get('/', checkTokenAndRedirect, (req, res) => {
 });
 
 // GET: app page
-router.get('/app', authenticateToken, async (req, res) => {
-    console.log('User.id in /app: ', req.user);
-    const user = await getUserDetails(req.user.id);
-    console.log('User details in /app: ', user);
-    res.render("home", { user: user });
+router.get('/app', async (req, res) => {
+    try {
+        if (!req.session.token)
+            return res.redirect('/login');
+
+        let userInfo = {};
+        try {
+            jwt.verify(req.session.token, secret, (err, user) => {
+                if (err) {
+                    console.error("Error in jwtTokenVerify: ", err.message);
+                    return res.redirect('//api/auth/logout');
+                }
+                userInfo = user || {};
+            });
+        } catch (err) {
+            console.error('Error in jwtTokenVerify: ', err.message);
+            return res.redirect('/api/auth/logout'); // remove faulty / expired token from session
+        }
+        const userId = userInfo.id;
+
+        // Fetch data based on user type (host or participant)
+        let user = await getUserDetails(userId);
+        let createdQuizzes = [];
+        let participatedQuizzes = [];
+        let availableQuizzes = [];
+
+        createdQuizzes = await getCreatedQuizzes(userId);
+        // console.log("Created quizzes in /dash: ", createdQuizzes);
+        participatedQuizzes = await getParticipatedQuizzes(userId);
+        // console.log("Participated quizzes in /dash: ", participatedQuizzes);
+        availableQuizzes = await getAvailableQuizzes();
+        // console.log("Available quizzes in /dash: ", availableQuizzes);
+        console.log('User in /dashboard: ', user);
+        res.render('dashboard', {
+            user: user,
+            createdQuizzes,
+            participatedQuizzes,
+            availableQuizzes
+        });
+    } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        res.status(500).json({ message: 'Internal server error', error: error });
+    }
 });
+
 
 // GET: login page
 router.get('/login', (req, res) => {
