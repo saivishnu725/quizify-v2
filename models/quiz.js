@@ -17,10 +17,8 @@ const Quiz = sequelize.define('quizzes', {
     description: { type: DataTypes.TEXT },
     creator_id: { type: DataTypes.BIGINT, allowNull: false },
     maxTime: { type: DataTypes.INTEGER, allowNull: false },
-    maxPlayers: { type: DataTypes.INTEGER, allowNull: false },
     score: { type: DataTypes.FLOAT, allowNull: false },
     negativeScore: { type: DataTypes.FLOAT, allowNull: false },
-    joinTime: { type: DataTypes.INTEGER, allowNull: false },
     creation_date: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     updated_at: { type: DataTypes.DATE, defaultValue: DataTypes.NOW, onUpdate: DataTypes.NOW }
 }, {

@@ -36,10 +36,8 @@ export async function saveQuiz(quizData, userId) {
                 quizTag: quizTag,
                 creator_id: userId,
                 maxTime: quizData.maxTime,
-                maxPlayers: quizData.maxPlayers,
                 score: quizData.score,
                 negativeScore: quizData.negativeScore,
-                joinTime: quizData.joinTime,
             });
         } catch (e) {
             console.error("Error saving quiz in MariaDB:", e);
@@ -56,10 +54,8 @@ export async function saveQuiz(quizData, userId) {
             title: quizData.title,
             description: quizData.description,
             maxTime: quizData.maxTime,
-            maxPlayers: quizData.maxPlayers,
             score: quizData.score,
             negativeScore: quizData.negativeScore,
-            joinTime: quizData.joinTime,
             questions: (quizData.quiz || []).map((q, index) => ({
                 question_id: index + 1,
                 question_type: q.type,

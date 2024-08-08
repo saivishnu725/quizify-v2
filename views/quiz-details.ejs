@@ -1,24 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <title>Quiz Details</title>
-</head>
-<body>
-    <div>
-        <h1><%= quiz.title %></h1>
-        <p><%= quiz.description %></p>
-        <ul>
-            <li><strong>Max Time:</strong> <%= quiz.maxTime %> minutes</li>
-            <li><strong>Max Players:</strong> <%= quiz.maxPlayers %></li>
-            <li><strong>Score per Correct Answer:</strong> <%= quiz.score %></li>
-            <li><strong>Negative Score per Wrong Answer:</strong> <%= quiz.negativeScore %></li>
-            <li><strong>Join Time:</strong> <%= quiz.joinTime %> seconds</li>
-            <li><strong>Number of Questions:</strong> <%= quiz.questions.length %></li>
-        </ul>
 
-        <form action="/participate/<%= quiz.quiz_tag %>" method="get">
-            <button type="submit">Participate</button>
-        </form>
-    </div>
+<head>
+  <title>Quiz Details</title>
+</head>
+
+<body>
+  <div>
+    <h1><%= quiz.title %></h1>
+    <p><%= quiz.description %></p>
+    <ul>
+      <li><strong>Max Time:</strong> <%= quiz.maxTime %> minutes</li>
+      <li><strong>Score per Correct Answer:</strong> <%= quiz.score %></li>
+      <li><strong>Negative Score per Wrong Answer:</strong> <%= quiz.negativeScore %></li>
+      <li><strong>Number of Questions:</strong> <%= quiz.questions.length %></li>
+    </ul>
+
+    <form action="/participate/<%= quiz.quiz_tag %>" method="get">
+      <button type="submit">Participate</button>
+    </form>
+  </div>
 </body>
+
 </html>

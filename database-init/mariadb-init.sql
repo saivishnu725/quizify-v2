@@ -17,10 +17,8 @@ CREATE TABLE
         `quizTag` VARCHAR(255) NOT NULL,
         `description` TEXT NULL,
         `maxTime` INT NOT NULL,
-        `maxPlayers` INT NOT NULL,
         `score` FLOAT NOT NULL,
         `negativeScore` FLOAT NOT NULL,
-        `joinTime` INT NOT NULL,
         `creator_id` BIGINT NOT NULL COMMENT 'User ID of who created the quiz',
         `creation_date` TIMESTAMP NOT NULL,
         `updated_at` TIMESTAMP NOT NULL

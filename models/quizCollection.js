@@ -20,10 +20,8 @@ const quizSchema = new Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     maxTime: { type: Number, required: true },
-    maxPlayers: { type: Number, required: true },
     score: { type: Number, required: true },
     negativeScore: { type: Number, required: true },
-    joinTime: { type: Number, required: true },
     questions: [questionSchema],
     user_id: Number
 });
