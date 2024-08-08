@@ -16,7 +16,7 @@ const secret = process.env.JWT_SECRET || "secret";
 
 // TODO: get: user info route
 
-// TODO: post: create quiz
+// Post: create quiz
 router.post("/create-quiz", async (req, res) => {
     console.log("Form posted");
     console.log("Quiz created: ", req.body);
