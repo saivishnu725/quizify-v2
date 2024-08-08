@@ -1,6 +1,7 @@
 import User from "../models/user.js"; // Import the User model
 import QuizCollection from "../models/quizCollection.js"; // Import the QuizCollection model | stores the entire quiz
 import Quiz from "../models/quiz.js"; // Import the Quiz model | stores the basic quiz details
+import UserQuizAnswersCollection from "../models/userQuizAnswersCollection.js"; // Import the UserQuizAnswers model | stores the user's answers
 
 // Get user details
 export async function getUserDetails(id) {
@@ -103,4 +104,26 @@ export async function getQuizDetails(quizTag) {
     } catch (error) {
         console.error('Error retrieving quiz details:', error);
     }
+}
+
+// Helper functions to fetch data
+export async function getCreatedQuizzes(userId) {
+    // Fetch quizzes created by the user (host)
+    const quizzes = await Quiz.findAll({ where: { creator_id: userId } });
+    // console.log('Quizzes retrieved:', quizzes);
+    return quizzes;
+}
+
+export async function getParticipatedQuizzes(userId) {
+    // Fetch quizzes participated by the user
+    const participations = await UserQuizAnswersCollection.find({ user_id: userId });
+    // console.log('Participations retrieved:', participations);
+    return participations;
+}
+
+export async function getAvailableQuizzes() {
+    // Fetch available quizzes for participation
+    const quizzes = await QuizCollection.find({}).limit(5);
+    // console.log('Available quizzes retrieved:', quizzes);
+    return quizzes;
 }
