@@ -79,6 +79,7 @@ router.post('/submit-quiz', async (req, res) => {
         let userAnswers = [];
         try {
             userAnswers = quiz.questions.map((q, index) => {
+                // TODO: handle edge cases (e.g., user doesn't select an answer)
                 console.log('answers[index]:', answers[index]);
                 const correct = q.correctOption === parseInt(answers[index]);
                 if (correct) correctAnswersCount++;
