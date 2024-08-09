@@ -152,6 +152,7 @@ router.get('/participate/:quiz_id', async (req, res) => {
         if (quiz === 'Quiz not found' || quiz === 'Quiz collection not found') {
             return res.status(404).json({ message: 'Quiz not found' });
         }
+        console.log("Quiz details in /participate/:quiz_id", quiz);
         res.render('participate', { quiz });
     } catch (error) {
         console.error('Error fetching quiz participation page:', error);
@@ -160,21 +161,60 @@ router.get('/participate/:quiz_id', async (req, res) => {
 });
 
 // Get: quiz-results
-router.get('/results', (req, res) => {
+router.get('/results/:quiz_tag', async (req, res) => {
+    try {
+        // 1. Retrieve user ID from session token
+        let userInfo = {};
+        try {
 
-    // check if token is quiz results.if yes, send to / app
-    if (req.session.quizResults) {
-        console.log('quizResults received: ', req.session.quizResult);
-        const quizResult = req.session.quizResult;
-        res.render('quiz-results', {
-            questionsCount: quizResult.questionsCount,
-            correctQuestions: quizResult.correctQuestions,
-            wrongQuestions: quizResult.wrongQuestions,
-            finalPercentage: quizResult.finalPercentage,
-            quizTitle: quizResult.quizTitle
+            jwt.verify(req.session.token, secret, (err, user) => {
+                if (err) {
+                    console.error("Error in jwtTokenVerify:", err.message);
+                    return res.status(401).json({ message: "Unauthorized" });
+                }
+                userInfo = user || {};
+            });
+        } catch (e) {
+            console.error('Error in jwtTokenVerify:', e.message);
+            res.redirect('/api/auth/logout');
+        }
+        const userId = userInfo.id;
+
+        // 2. Retrieve the user's quiz answers from the database
+        const userQuizAnswers = await UserQuizAnswersCollection.findOne({
+            user_id: userId,
+            quiz_tag: req.params.quiz_tag
         });
-    } else
-        res.redirect('/');
+
+        if (!userQuizAnswers) {
+            return res.status(404).json({ message: "Quiz results not found" });
+        }
+
+        // 3. Retrieve the quiz data to display the results
+        const quiz = await QuizCollection.findOne({ quiz_tag: req.params.quiz_tag });
+        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+
+        const totalQuestions = quiz.questions.length;
+        const correctAnswersCount = userQuizAnswers.answers.filter((answer, index) => {
+            return quiz.questions[index].correctOption === answer.selected_option_id;
+        }).length;
+
+        const wrongAnswersCount = totalQuestions - correctAnswersCount;
+        const finalPercentage = (correctAnswersCount / totalQuestions) * 100;
+
+        // 4. Render the results page
+        res.render('quiz-results', {
+            questionsCount: totalQuestions,
+            correctQuestions: correctAnswersCount,
+            wrongQuestions: wrongAnswersCount,
+            finalPercentage: finalPercentage,
+            quizTitle: quiz.title
+        });
+
+    } catch (error) {
+        console.error("Error retrieving quiz results:", error);
+        res.status(500).json({ message: "Internal server error", error: error });
+    }
 });
 
 // Get: user quiz list

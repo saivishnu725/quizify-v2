@@ -151,19 +151,8 @@ router.post('/submit-quiz', async (req, res) => {
             return;  // won't continue
         }
 
-        // 6. Wrap the final result into JSON and redirect to quiz-result
-        const result = {
-            questionsCount: totalQuestions,
-            correctQuestions: correctAnswersCount,
-            wrongQuestions: wrongAnswersCount,
-            finalPercentage: finalPercentage,
-            quizTitle: quiz.title
-        };
-
-        // res.status(200).json(result);
         // redirect to the result page
-        req.session.quizResult = result;
-        res.redirect('/results/');
+        res.redirect(`/results/${quizTag}`);
 
     } catch (error) {
         console.error("Error in submitting quiz:", error);
