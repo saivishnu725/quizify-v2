@@ -126,10 +126,13 @@ router.get('/quiz/:quiz_id', async (req, res) => {
                 res.status(404).json({ message: 'Quiz not found' });
             else {
                 const isHost = quiz.user_id === userId;
-                if (isHost)
+                if (isHost) {
+                    // console.log('Quiz in /quiz/:quiz_id for isHost (quiz-preview): ', quiz);
                     res.render('quiz-preview', { quiz, isHost });
-                else
+                } else {
+                    // console.log('Quiz in /quiz/:quiz_id for noHost (quiz-details): ', quiz);
                     res.render('quiz-details', { quiz: quiz, isHost: false });
+                }
             }
 
         } else
