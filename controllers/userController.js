@@ -133,6 +133,7 @@ export const checkTokenAndRedirect = (req, res, next) => {
     });
 };
 
+// TODO: Use it wherever possible
 export const authenticateToken = (req, res, next) => {
     const token = req.session.token;
 
@@ -143,7 +144,7 @@ export const authenticateToken = (req, res, next) => {
     jwt.verify(token, secret, (err, user) => {
         if (err) {
             console.error("Error in authToken: ", err.message);
-            return res.redirect('/login'); // Redirect to login if token is invalid
+            return res.redirect('/api/auth/logout'); // Redirect to login if token is invalid
         }
 
         req.user = user; // Save user information to request object
