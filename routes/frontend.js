@@ -145,7 +145,7 @@ router.get('/participate/:quiz_id', async (req, res) => {
     try {
         const quizId = req.params.quiz_id;
         const quiz = await getQuizDetails(quizId);
-        console.log('Quiz details in /participate/:quiz_id: ', quiz);
+        // console.log('Quiz details in /participate/:quiz_id: ', quiz);
         if (quiz === 'Quiz not found' || quiz === 'Quiz collection not found') {
             return res.status(404).json({ message: 'Quiz not found' });
         }

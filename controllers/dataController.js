@@ -136,6 +136,6 @@ export async function getAvailableQuizzes(userId) {
             break;
         }
     }
-    console.log("Quizzes in getAvailableQuizzes", quizzes);
+    // console.log("Quizzes in getAvailableQuizzes", quizzes);
     return quizzes;
 }
