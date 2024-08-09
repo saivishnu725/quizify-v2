@@ -5,99 +5,79 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Creation | Quizify | TUA</title>
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" />
+
 </head>
 
 <body>
   <div class="container mt-5">
-    <p>Create a new quiz with multiple-choice, true/false, or 4-option questions.</p>
-    <form id="quiz-form" action="/api/create-quiz" method="POST">
-      <h3>Quiz Details</h3>
-      <div class="form-group">
-        <label for="title">Title: </label>
-        <input type="text" class="form-control" id="title" name="title" required>
-      </div>
-      <br>
-      <div class="form-group">
-        <label for="description">Description: </label>
-        <textarea class="form-control" id="description" name="description" rows="1"></textarea>
-      </div>
-      <!--  
-      Max time per question or overall quiz.
-Max players allowed.
-Score per correct answer.
-Negative scoring for wrong answers (if applicable).
-Time frame for joining the quiz.
-Randomization of questions.
-      -->
-      <br>
-      <div class="form-group">
-        <label for="max-time">
-          Max Time per Question (in seconds):
-        </label>
-        <input type="number" class="form-control" id="max-time" name="maxTime" required>
-      </div>
+    <div class="row">
+      <div class="col-md-8 offset-md-2">
+        <h1 class="mb-4">Create a New Quiz</h1>
+        <p class="lead">Design a quiz with multiple-choice, true/false, or 2-option questions.</p>
 
-      <br>
-      <div class="form-group">
-        <label for="max-players">
-          Max Players Allowed:
-        </label>
-        <input type="number" class="form-control" id="max-players" name="maxPlayers" required>
-      </div>
-
-      <br>
-      <div class="form-group">
-        <label for="score">
-          Score per Correct Answer:
-        </label>
-        <input type="number" class="form-control" id="score" name="score" required>
-      </div>
-
-      <br>
-      <div class="form-group">
-        <label for="negative-score">
-          Negative Scoring for Wrong Answers:
-        </label>
-        <input type="number" class="form-control" id="negative-score" name="negativeScore" step="0.01" required>
-      </div>
-
-      <!-- {{/* TODO: time frame input  */}} -->
-      <br>
-      <div class="form-group visually-hidden">
-        <label for="join-time">
-          Time Frame for Joining the Quiz (in seconds):
-        </label>
-        <input type="number" class="form-control" id="join-time" name="joinTime" required>
-      </div>
-
-      <br>
-      <h3>Quiz Questions</h3>
-      <div id="quizContainer">
-        <div class="quiz mb-4" id="quiz1">
-          <br>
-          <div class="form-group">
-            <label for="question1">Question</label>
-            <input type="text" class="form-control" id="question1" name="quiz[0][question]" required>
+        <form id="quiz-form" action="/api/create-quiz" method="POST">
+          <!-- Quiz Details -->
+          <h3 class="mb-3">Quiz Details</h3>
+          <div class="form-group mb-3">
+            <label for="title" class="form-label">Title</label>
+            <input type="text" class="form-control" id="title" name="title" required>
           </div>
-          <div class="form-group">
-            <label for="quizType1">Select Quiz Type</label>
-            <select class="form-control" id="quizType1" name="quiz[0][type]" onchange="showOptions(this, 1)">
-              <option value="4-options">4 Options</option>
-              <option value="2-options">2 Options</option>
-              <option value="true-false">True/False</option>
-            </select>
+
+          <div class="form-group mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="2"></textarea>
           </div>
-          <div class="options" id="options1">
-            <!-- Options will be dynamically added here -->
+
+          <div class="form-group mb-3">
+            <label for="max-time" class="form-label">Max Time per Question (in seconds)</label>
+            <input type="number" class="form-control" id="max-time" name="maxTime" required>
           </div>
-        </div>
+
+          <div class="form-group mb-3">
+            <label for="score" class="form-label">Score per Correct Answer</label>
+            <input type="number" class="form-control" id="score" name="score" required>
+          </div>
+
+          <div class="form-group mb-4">
+            <label for="negative-score" class="form-label">Negative Scoring for Wrong Answers</label>
+            <input type="number" class="form-control" id="negative-score" name="negativeScore" step="0.01" required>
+          </div>
+
+          <!-- Quiz Questions -->
+          <h3 class="mb-3">Quiz Questions</h3>
+          <div id="quizContainer">
+            <div class="card mb-4">
+              <div class="card-body" id="quiz1">
+                <h5 class="card-title">Question 1</h5>
+                <div class="form-group mb-3">
+                  <label for="question1" class="form-label">Question</label>
+                  <input type="text" class="form-control" id="question1" name="quiz[0][question]" required>
+                </div>
+                <div class="form-group mb-3">
+                  <label for="quizType1" class="form-label">Select Quiz Type</label>
+                  <select class="form-select" id="quizType1" name="quiz[0][type]" onchange="showOptions(this, 1)">
+                    <option value="4-options">4 Options</option>
+                    <option value="2-options">2 Options</option>
+                    <option value="true-false">True/False</option>
+                  </select>
+                </div>
+                <div class="options" id="options1">
+                  <!-- Options will be dynamically added here -->
+                </div>
+              </div>
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary mt-2" onclick="addQuiz()">Add Another Question</button>
+          <button type="submit" class="btn btn-primary mt-4">Submit Quiz</button>
+        </form>
       </div>
-      <button type="button" class="btn btn-secondary mt-2" onclick="addQuiz()">Add Another Quiz</button> <br> <br>
-      <button type="submit" class="btn btn-primary mt-2">Submit</button>
-    </form>
+    </div>
   </div>
 
   <script src="./js/create-quiz.js"></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
