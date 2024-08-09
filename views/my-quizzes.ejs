@@ -2,29 +2,59 @@
 <html lang="en">
 
 <head>
-  <title>My Quizzes</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Quizzes | Quizify </title>
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" />
+
 </head>
 
 <body>
-  <div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">Quizify</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="/create-quiz">Create Quiz</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/logout">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <div class="container mt-5">
     <% if (quizzes.length === 0) { %>
-    <p>You haven't created any quizzes yet.</p>
+    <div class="alert alert-info" role="alert">
+      You haven't created any quizzes yet.
+    </div>
     <% } else { %>
-    <h1>My Quizzes</h1>
-    <ul>
+    <h1 class="mb-4">My Quizzes</h1>
+    <div class="row">
       <% quizzes.forEach(quiz => { %>
-      <li>
-        Title: <a href="/quiz/<%= quiz.quizTag %>"><%= quiz.title %></a>
-        <br />
-        <p> Description: <%= quiz.description %></p>
-        <a href="/quiz/<%= quiz.quizTag %>/results">View Results</a>
-        <br />
-      </li>
-      <hr>
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title"><a href="/quiz/<%= quiz.quizTag %>" class="text-decoration-none"><%= quiz.title %></a></h5>
+            <p class="card-text"><%= quiz.description %></p>
+            <p class="text-muted">Max Time: <%= quiz.maxTime %> seconds</p>
+            <p class="text-muted">Score per Correct Answer: <%= quiz.score %></p>
+            <p class="text-muted">Negative Scoring: <%= quiz.negativeScore %></p>
+            <a href="/quiz/<%= quiz.quizTag %>/results" class="btn btn-outline-primary">View Results</a>
+          </div>
+        </div>
+      </div>
       <% }); %>
-    </ul>
+    </div>
     <% } %>
   </div>
-</body>
 
 </html>
