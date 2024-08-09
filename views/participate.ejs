@@ -2,19 +2,90 @@
 <html lang="en">
 
 <head>
-  <title>Quiz Participation</title>
-  <script>
-    // Initialize an array to store answers
-    let answers = [];
+  <title>Quiz Participation | Quizify</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" />
+</head>
 
-    // Function to show the next question
+<body>
+  <!-- Header -->
+  <header class="bg-dark text-white py-3">
+    <div class="container">
+      <h1 class="h3">Quiz Participation</h1>
+      <p class="lead">Quiz: <%= quiz.title %></p>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container mt-4">
+    <form id="quiz-form" action="/api/submit-quiz" method="POST">
+      <input type="hidden" name="quizTag" value="<%= quiz.quiz_tag %>">
+      <input type="hidden" id="maxTime" value="<%= quiz.maxTime %>">
+      <input type="hidden" name="answers" id="answersInput" value="[]">
+      <input type="hidden" id="currentIndex" value="0">
+
+      <!-- Countdown Timer -->
+      <div id="countdown" class="text-end mb-4">Time left: <%= quiz.maxTime %> seconds</div>
+
+      <!-- Questions Section -->
+      <% quiz.questions.forEach((q, index) => { %>
+      <div class="question-container" style="display: none;">
+        <h3>Question <%= index + 1 %> of <%= quiz.questions.length %></h3>
+        <p class="mb-4"><%= q.question_text %></p>
+        <div class="row">
+          <% if (q.question_type === 'true-false') { %>
+          <div class="col-6">
+            <label class="btn btn-outline-primary w-100">
+              <input type="radio" name="question<%= index %>" value="0" onclick="selectAnswer(<%= index %>, 0)"> True
+            </label>
+          </div>
+          <div class="col-6">
+            <label class="btn btn-outline-primary w-100">
+              <input type="radio" name="question<%= index %>" value="1" onclick="selectAnswer(<%= index %>, 1)"> False
+            </label>
+          </div>
+          <% } else { %>
+          <% q.options.forEach((opt, idx) => { %>
+          <div class="col-6">
+            <label class="btn btn-outline-primary w-100 mb-2">
+              <input type="radio" name="question<%= index %>" value="<%= idx %>" onclick="selectAnswer(<%= index %>, <%= idx %>)">
+              Option <%= idx + 1 %>: <%= opt.option_text %>
+            </label>
+          </div>
+          <% }); %>
+          <% } %>
+        </div>
+      </div>
+      <% }); %>
+
+      <!-- Navigation Buttons -->
+      <div class="text-center mt-5">
+        <button type="button" id="next-button" class="btn btn-primary btn-lg" onclick="nextQuestion()">Next Question</button>
+        <button type="button" id="submit-button" class="btn btn-success btn-lg" onclick="submitQuiz()" style="display: none;">Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-dark text-white py-3 mt-5">
+    <div class="container text-center">
+      <p>&copy; <%= new Date().getFullYear() %> Quizify. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    let answers = [];
+    let timer;
+    let countdownElement = document.getElementById('countdown');
+
     function showQuestion(index) {
       const questions = document.querySelectorAll('.question-container');
       questions.forEach((q, i) => {
         q.style.display = i === index ? 'block' : 'none';
       });
 
-      // Show or hide the "Next Question" and "Submit" buttons
       if (index < questions.length - 1) {
         document.getElementById('next-button').style.display = 'block';
         document.getElementById('submit-button').style.display = 'none';
@@ -23,40 +94,29 @@
         document.getElementById('submit-button').style.display = 'block';
       }
 
-      // Store the current question index
       document.getElementById('currentIndex').value = index;
-
-      // Start the countdown timer for maxTime
       startTimer(index);
     }
 
-    // Function to handle answer selection
     function selectAnswer(questionIndex, answerIndex) {
       answers[questionIndex] = answerIndex;
       document.getElementById('answersInput').value = JSON.stringify(answers);
     }
 
-    // Function to go to the next question
     function nextQuestion() {
       const currentIndex = parseInt(document.getElementById('currentIndex').value, 10);
       showQuestion(currentIndex + 1);
     }
 
-    // Function to submit the form
     function submitQuiz() {
       document.getElementById('quiz-form').submit();
     }
 
-    // Timer-related variables
-    let timer;
-    let countdownElement = document.getElementById('countdown');
-
-    // Function to start the countdown timer
     function startTimer(index) {
       const maxTime = parseInt(document.getElementById('maxTime').value, 10);
       let timeLeft = maxTime;
 
-      clearInterval(timer); // Clear any existing timer
+      clearInterval(timer);
       countdownElement.textContent = `Time left: ${timeLeft} seconds`;
 
       timer = setInterval(() => {
@@ -65,45 +125,20 @@
 
         if (timeLeft <= 0) {
           clearInterval(timer);
-          nextQuestion(); // Automatically go to the next question
+          if (index < document.querySelectorAll('.question-container').length - 1) {
+            nextQuestion();
+          } else {
+            submitQuiz(); // Automatically submit the quiz if the last question's time runs out
+          }
         }
       }, 1000);
     }
 
-    // Initialize the quiz with the first question
     window.onload = () => {
       countdownElement = document.getElementById('countdown');
       showQuestion(0);
     };
   </script>
-</head>
-
-<body>
-  <form id="quiz-form" action="/api/submit-quiz" method="POST">
-      <input type="hidden" name="quizTag" value="<%= quiz.quiz_tag %>">
-    <input type="hidden" id="maxTime" value="<%= quiz.maxTime %>">
-    <% quiz.questions.forEach((q, index) => { %>
-    <div class="question-container" style="display: none;">
-      <h3>Question <%= index + 1 %> of <%= quiz.questions.length %></h3>
-      <p><%= q.question_text %></p>
-      <% if (q.question_type === 'true-false') { %>
-      <label><input type="radio" name="question<%= index %>" value="0" onclick="selectAnswer(<%= index %>, 0)"> True</label><br>
-      <label><input type="radio" name="question<%= index %>" value="1" onclick="selectAnswer(<%= index %>, 1)"> False</label><br>
-      <% } else { %>
-      <% q.options.forEach((opt, idx) => { %>
-      <label><input type="radio" name="question<%= index %>" value="<%= idx %>" onclick="selectAnswer(<%= index %>, <%= idx %>)"> <%= opt.option_text %></label><br>
-      <% }); %>
-      <% } %>
-    </div>
-    <% }); %>
-
-    <div id="countdown">Time left: <%= quiz.maxTime %> seconds</div>
-    <input type="hidden" name="answers" id="answersInput" value="[]">
-    <input type="hidden" id="currentIndex" value="0">
-
-    <button type="button" id="next-button" onclick="nextQuestion()">Next Question</button>
-    <button type="button" id="submit-button" onclick="submitQuiz()" style="display: none;">Submit</button>
-  </form>
 </body>
 
 </html>
