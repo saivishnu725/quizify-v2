@@ -37,7 +37,8 @@
       <h2>Your Created Quizzes</h2>
       <% if (createdQuizzes.length > 0) { %>
       <ul class="list-group">
-        <% createdQuizzes.forEach(quiz => { %>
+        <% createdQuizzes.slice(0, 5).forEach(quiz => { %>
+        <!-- Display first 5 quizzes only -->
         <li class="list-group-item">
           <h5><a href="/quiz/<%= quiz.quizTag %>" class="text-decoration-none"><%= quiz.title %></a></h5>
           <p class="mb-1"><%= quiz.description %></p>
@@ -45,6 +46,11 @@
         </li>
         <% }) %>
       </ul>
+      <% if (createdQuizzes.length > 5) { %>
+      <div class="text-end mt-3">
+        <a href="/my-quizzes" class="btn btn-outline-primary">View More</a>
+      </div>
+      <% } %>
       <% } else { %>
       <p>No quizzes created yet.</p>
       <% } %>
