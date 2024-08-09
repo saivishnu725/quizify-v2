@@ -28,7 +28,7 @@
   <section class="container mt-4">
     <div class="input-group mb-3">
       <input type="text" id="quiz_tag_input" name="quiz_tag" class="form-control" placeholder="Enter Quiz Tag" required>
-      <button class="btn btn-primary" onclick="redirectToQuiz()">Join Quiz</button>
+      <button class="btn btn-primary" onclick="redirectToQuiz(event)">Join Quiz</button>
     </div>
   </section>
 
@@ -85,7 +85,7 @@
             <h5><a href="/quiz/<%= quiz.quiz_tag %>" class="text-decoration-none"><%= quiz.title %></a></h5>
             <p class="mb-1"><%= quiz.description %></p>
           </div>
-          <a href="/participate/<%= quiz.quiz_tag %>" class="btn btn-primary">Participate</a>
+          <a href="/quiz/<%= quiz.quiz_tag %>" class="btn btn-primary">Participate</a>
         </li>
         <% }) %>
       </ul>
@@ -110,6 +110,7 @@
     function redirectToQuiz(event) {
       event.preventDefault(); // Prevent the default form submission
       const quizTag = document.getElementById('quiz_tag_input').value;
+      console.log(quizTag);
       if (quizTag) {
         window.location.href = `/quiz/${quizTag}`; // Redirect to /quiz/quiz_tag
       }
