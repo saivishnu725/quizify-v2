@@ -117,9 +117,25 @@ export async function getParticipatedQuizzes(userId) {
     return participations;
 }
 
-export async function getAvailableQuizzes() {
-    // Fetch available quizzes for participation
-    const quizzes = await QuizCollection.find({}).limit(5);
-    // console.log('Available quizzes retrieved:', quizzes);
+export async function getAvailableQuizzes(userId) {
+    let quizzes = [];
+    let limit = 5; // get only the first 5 quizzes created by different host(s)
+    let skip = 0;
+
+    while (quizzes.length < limit) {
+        // Fetch quizzes, excluding those created by the same user
+        const newQuizzes = await QuizCollection.find({ user_id: { $ne: userId } })
+            .skip(skip)
+            .limit(limit - quizzes.length);
+
+        quizzes = quizzes.concat(newQuizzes);
+        skip += newQuizzes.length;
+
+        // Break the loop if there are no more quizzes to fetch
+        if (newQuizzes.length === 0) {
+            break;
+        }
+    }
+    console.log("Quizzes in getAvailableQuizzes", quizzes);
     return quizzes;
 }

@@ -46,6 +46,7 @@ router.get('/app', async (req, res) => {
 
         // Fetch data based on user type (host or participant)
         let user = await getUserDetails(userId);
+        // console.log('User in /dashboard: ', user);
         let createdQuizzes = [];
         let participatedQuizzes = [];
         let availableQuizzes = [];
@@ -54,9 +55,8 @@ router.get('/app', async (req, res) => {
         // console.log("Created quizzes in /dash: ", createdQuizzes);
         participatedQuizzes = await getParticipatedQuizzes(userId);
         // console.log("Participated quizzes in /dash: ", participatedQuizzes);
-        availableQuizzes = await getAvailableQuizzes();
+        availableQuizzes = await getAvailableQuizzes(userId);
         // console.log("Available quizzes in /dash: ", availableQuizzes);
-        console.log('User in /dashboard: ', user);
         res.render('dashboard', {
             user: user,
             createdQuizzes,
