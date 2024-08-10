@@ -166,17 +166,17 @@ router.get('/results/:quiz_tag', async (req, res) => {
         // 1. Retrieve user ID from session token
         let userInfo = {};
         try {
-
             jwt.verify(req.session.token, secret, (err, user) => {
                 if (err) {
                     console.error("Error in jwtTokenVerify:", err.message);
-                    return res.status(401).json({ message: "Unauthorized" });
+                    // return res.status(401).json({ message: "Unauthorized" });
+                    return res.redirect('/api/auth/logout');
                 }
                 userInfo = user || {};
             });
         } catch (e) {
             console.error('Error in jwtTokenVerify:', e.message);
-            res.redirect('/api/auth/logout');
+            return res.redirect('/api/auth/logout');
         }
         const userId = userInfo.id;
 
@@ -200,13 +200,35 @@ router.get('/results/:quiz_tag', async (req, res) => {
         }).length;
 
         const wrongAnswersCount = totalQuestions - correctAnswersCount;
+
+        // 4. Calculate the final score using the score and negativeScore from QuizCollection
+        const scorePerCorrect = quiz.score;
+        const negativeScorePerWrong = quiz.negativeScore;
+        const finalScore = (correctAnswersCount * scorePerCorrect) + (wrongAnswersCount * negativeScorePerWrong);
+
+        // 5. Calculate the final percentage
         const finalPercentage = (correctAnswersCount / totalQuestions) * 100;
 
-        // 4. Render the results page
+        // 5. Calculate the maximum possible score
+        const maxScore = totalQuestions * scorePerCorrect;
+
+        // 6. Render the results page with the calculated score and quiz data
+        console.log("Result data: ", {
+            questionsCount: totalQuestions,
+            correctQuestions: correctAnswersCount,
+            wrongQuestions: wrongAnswersCount,
+            finalScore: finalScore,
+            maxScore: maxScore,
+            finalPercentage: finalPercentage,
+            quizTitle: quiz.title
+        });
+
         res.render('quiz-results', {
             questionsCount: totalQuestions,
             correctQuestions: correctAnswersCount,
             wrongQuestions: wrongAnswersCount,
+            finalScore: finalScore,
+            maxScore: maxScore,
             finalPercentage: finalPercentage,
             quizTitle: quiz.title
         });
@@ -216,6 +238,7 @@ router.get('/results/:quiz_tag', async (req, res) => {
         res.status(500).json({ message: "Internal server error", error: error });
     }
 });
+
 
 // Get: user quiz list
 router.get('/my-quizzes', async (req, res) => {
