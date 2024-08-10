@@ -43,12 +43,16 @@
       <div class="col-md-6 mb-4">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title"><a href="/quiz/<%= quiz.quizTag %>" class="text-decoration-none"><%= quiz.title %></a></h5>
+            <h5 class="card-title">
+              <a href="/quiz/<%= quiz.quizTag %>" class="text-decoration-none"><%= quiz.title %></a>
+            </h5>
             <p class="card-text"><%= quiz.description %></p>
             <p class="text-muted">Max Time: <%= quiz.maxTime %> seconds</p>
             <p class="text-muted">Score per Correct Answer: <%= quiz.score %></p>
             <p class="text-muted">Negative Scoring: <%= quiz.negativeScore %></p>
-            <a href="/quiz/<%= quiz.quizTag %>/results" class="btn btn-outline-primary">View Results</a>
+            <div>
+              <a href="/quiz/<%= quiz.quizTag %>/results" class="btn btn-outline-primary">View Overall Results</a>
+            </div>
           </div>
         </div>
       </div>
@@ -56,5 +60,6 @@
     </div>
     <% } %>
   </div>
+
 
 </html>
