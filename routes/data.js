@@ -42,7 +42,8 @@ router.post("/create-quiz", async (req, res) => {
         await user.save();
     }
 
-    res.status(201).json({ message: "Quiz created successfully", quiz: req.body, userID: userInfo.id, quizId: quizId, quizTag: quizTag });
+    // res.status(201).json({ message: "Quiz created successfully", quiz: req.body, userID: userInfo.id, quizId: quizId, quizTag: quizTag });
+    res.redirect(`/quiz/${quizTag}`);
 });
 
 // Handle quiz submission
