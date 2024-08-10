@@ -213,15 +213,15 @@ router.get('/results/:quiz_tag', async (req, res) => {
         const maxScore = totalQuestions * scorePerCorrect;
 
         // 6. Render the results page with the calculated score and quiz data
-        console.log("Result data: ", {
-            questionsCount: totalQuestions,
-            correctQuestions: correctAnswersCount,
-            wrongQuestions: wrongAnswersCount,
-            finalScore: finalScore,
-            maxScore: maxScore,
-            finalPercentage: finalPercentage,
-            quizTitle: quiz.title
-        });
+        // console.log("Result data: ", {
+        //     questionsCount: totalQuestions,
+        //     correctQuestions: correctAnswersCount,
+        //     wrongQuestions: wrongAnswersCount,
+        //     finalScore: finalScore,
+        //     maxScore: maxScore,
+        //     finalPercentage: finalPercentage,
+        //     quizTitle: quiz.title
+        // });
 
         res.render('quiz-results', {
             questionsCount: totalQuestions,
