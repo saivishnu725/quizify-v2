@@ -39,6 +39,31 @@ function showOptions(select, quizId) {
     }
   }
 }
+function validateQuizForm() {
+  const quizzes = document.querySelectorAll('#quizContainer .card-body');
+  let valid = true;
+  quizzes.forEach((quiz, index) => {
+    const correctOption = quiz.querySelector('input[name="quiz[' + index + '][correctOption]"]:checked');
+    if (!correctOption) {
+      valid = false;
+      quiz.querySelector('.form-group').classList.add('has-error'); // Add error class for visual feedback
+    } else {
+      quiz.querySelector('.form-group').classList.remove('has-error');
+    }
+  });
+
+  if (!valid) {
+    alert('Please select a correct answer for each question.');
+  }
+
+  return valid;
+}
+
+document.getElementById('quiz-form').addEventListener('submit', function (event) {
+  if (!validateQuizForm()) {
+    event.preventDefault(); // Prevent form submission if validation fails
+  }
+});
 
 function addQuiz() {
   quizCount++;
