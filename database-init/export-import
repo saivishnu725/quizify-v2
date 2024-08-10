@@ -1,0 +1,5 @@
+#exporting the database
+mysqldump -u [username] -p --no-data quizify > quizify-dump.sql
+
+# importing the database schema
+mariadb -u [username] -p quizify < quizify-dump.sql
