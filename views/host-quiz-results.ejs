@@ -3,20 +3,69 @@
 
 <head>
   <title>Quiz Results - Host</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/bootstrap/bootstrap.min.css" />
+
+  <style>
+    .results-header {
+      background-color: #28a745;
+      color: white;
+      padding: 40px 0;
+      text-align: center;
+    }
+
+    .results-header h1 {
+      margin-bottom: 10px;
+      font-size: 2.5rem;
+    }
+
+    .results-header p {
+      font-size: 1.2rem;
+    }
+
+    .results-container {
+      max-width: 800px;
+      margin: 40px auto;
+    }
+
+    .results-summary {
+      padding: 20px;
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      margin-bottom: 30px;
+    }
+
+    .participants-table th,
+    .participants-table td {
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
-  <div>
-    <h1>Quiz Results: <%= quiz.title %></h1>
-    <p><%= quiz.description %></p>
+  <!-- Header Section -->
+  <header class="results-header">
+    <div class="container">
+      <h1>Quiz Results</h1>
+      <p>Overview of "<%= quiz.title %>"</p>
+    </div>
+  </header>
 
-    <h2>Overall Results</h2>
-    <p>Correct Answers: <%= totalCorrect %></p>
-    <p>Wrong Answers: <%= totalWrong %></p>
+  <!-- Main Content -->
+  <div class="container results-container">
+    <!-- Quiz Summary -->
+    <div class="results-summary">
+      <h2>Quiz Summary</h2>
+      <p><%= quiz.description %></p>
+      <p><strong>Total Correct Answers:</strong> <%= totalCorrect %></p>
+      <p><strong>Total Wrong Answers:</strong> <%= totalWrong %></p>
+    </div>
 
-    <h2>Participants</h2>
-    <table>
-      <thead>
+    <!-- Participants Results -->
+    <h2>Participants Results</h2>
+    <table class="table table-bordered participants-table">
+      <thead class="thead-dark">
         <tr>
           <th>User ID</th>
           <th>Correct Answers</th>
@@ -26,14 +75,20 @@
       <tbody>
         <% participants.forEach(participant => { %>
         <tr>
-          <td><%= participant.user_id %></td>
+          <td><%= participant.username %></td>
           <td><%= participant.correct %></td>
           <td><%= participant.wrong %></td>
         </tr>
         <% }) %>
       </tbody>
     </table>
+    <div class="text-center mt-4">
+      <a href="/app" class="btn btn-primary">Back to Dashboard</a>
+    </div>
   </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>
