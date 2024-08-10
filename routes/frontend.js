@@ -8,6 +8,7 @@ import { getUserDetails, getQuizDetails, getAvailableQuizzes, getCreatedQuizzes,
 
 // models
 import Quiz from "../models/quiz.js";
+import User from "../models/user.js";
 import QuizCollection from "../models/quizCollection.js";
 import UserQuizAnswersCollection from "../models/userQuizAnswersCollection.js";
 
@@ -293,8 +294,7 @@ router.get('/quiz/:quizTag/results', async (req, res) => {
             });
         } catch (err) {
             console.error('Error in jwtTokenVerify: ', err.message);
-            delete req.session.token; // remove faulty / expired token from session
-            return res.redirect('/login');
+            return res.redirect('/api/auth/logout');
         }
 
         const userId = userInfo.id;
@@ -325,9 +325,14 @@ router.get('/quiz/:quizTag/results', async (req, res) => {
         let totalWrong = 0;
         const participants = [];
 
-        quizResults.forEach(result => {
+        for (const result of quizResults) {
             let correctCount = 0;
             let wrongCount = 0;
+
+            // Fetch the username from the user ID
+            const user = await User.findOne({ where: { id: result.user_id } });
+            const username = user ? user.username : 'Unknown';
+
             result.answers.forEach(answer => {
                 const question = quizCollection.questions.find(q => q.question_id === answer.question_id);
                 if (question && question.correctOption === answer.selected_option_id) {
@@ -341,11 +346,19 @@ router.get('/quiz/:quizTag/results', async (req, res) => {
 
             participants.push({
                 user_id: result.user_id,
+                username: username,
                 correct: correctCount,
                 wrong: wrongCount
             });
-        });
+        }
 
+        console.log("host quiz results data: ", {
+            quiz: quizCollection,
+            totalCorrect,
+            totalWrong,
+            participants,
+            isHost: true
+        });
         res.render('host-quiz-results', {
             quiz: quizCollection,
             totalCorrect,
