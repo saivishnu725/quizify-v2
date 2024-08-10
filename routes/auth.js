@@ -9,7 +9,7 @@ router.post("/login", login);
 router.post("/register", register);
 
 // logout route
-router.get('/logout', (req, res) => {
+router.get('/logout', (req, res, next) => {
     try {
         // Destroy the session to log the user out
         req.session = null;
@@ -17,7 +17,10 @@ router.get('/logout', (req, res) => {
         res.redirect('/');
     } catch (err) {
         console.error('Error during session destruction:', err);
-        return res.status(500).json({ message: 'Internal server error', error: err });
+        // Handle any errors
+        const error = new Error('Error during session destruction!');
+        error.status = 500;
+        next(error);
     }
 });
 

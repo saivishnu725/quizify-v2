@@ -8,7 +8,7 @@ dotenv.config();
 const secret = process.env.JWT_SECRET || "secret";
 
 // Function to handle user login
-export async function login(req, res) {
+export async function login(req, res, next) {
     console.log("/login: ", req.body);
     const { email, password, remember } = req.body;
     console.log(email, password, remember);
@@ -59,12 +59,14 @@ export async function login(req, res) {
     } catch (err) {
         // Handle any errors
         console.error(err.message);
-        res.status(500).send(`Server Error\n\n ${err.message}`);
+        const error = new Error(`Server Error ${err.message}!`);
+        error.status = 500;
+        next(error);
     }
 }
 
 // Function to handle user registration
-export async function register(req, res) {
+export async function register(req, res, next) {
     console.log("/register:", req.body);
     const { first_name, last_name, email, username, password } = req.body;
 
@@ -74,7 +76,12 @@ export async function register(req, res) {
 
         // If user exists, return error
         if (user) {
-            return res.status(400).json({ message: "User already exists" });
+            // Handle any errors
+            console.error(err.message);
+            const error = new Error('User already exists!');
+            error.status = 500;
+            next(error);
+
         }
 
         // Create new user object
@@ -109,7 +116,9 @@ export async function register(req, res) {
     } catch (err) {
         // Handle any errors
         console.error(err.message);
-        res.status(500).send(`Server Error\n\n ${err.message}`);
+        const error = new Error(`Server Error ${err.message}!`);
+        error.status = 500;
+        next(error);
     }
 }
 

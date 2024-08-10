@@ -64,9 +64,13 @@ router.get('/app', async (req, res) => {
             participatedQuizzes,
             availableQuizzes
         });
-    } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        res.status(500).json({ message: 'Internal server error', error: error });
+    } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        // Handle any errors
+        console.error(err.message);
+        const error = new Error(`Error fetching dashboard data: ${err}!`);
+        error.status = 500;
+        next(error);
     }
 });
 
@@ -100,7 +104,7 @@ router.get('/create-quiz', async (req, res) => {
         res.redirect('/');
 });
 // Get: quiz
-router.get('/quiz/:quiz_id', async (req, res) => {
+router.get('/quiz/:quiz_id', async (req, res, next) => {
     console.log('Preview request for quiz: ', req.params.quiz_id);
     try {
         const quizId = req.params.quiz_id;
@@ -123,41 +127,54 @@ router.get('/quiz/:quiz_id', async (req, res) => {
             const quiz = await getQuizDetails(quizId);
             console.log('Quiz details in /quiz/:quiz_id: ', quiz);
 
-            if (quiz == 'Quiz not found' || quiz == 'Quiz collection not found')
-                res.status(404).json({ message: 'Quiz not found' });
+            if (quiz == 'Quiz not found' || quiz == 'Quiz collection not found') {
+                const error = new Error('Quiz not found!');
+                error.status = 500;
+                next(error);
+            }
             else {
                 const isHost = quiz.user_id === userId;
                 if (isHost) {
-                    // console.log('Quiz in /quiz/:quiz_id for isHost (quiz-preview): ', quiz);
                     res.render('quiz-preview', { quiz, isHost });
                 } else {
-                    // console.log('Quiz in /quiz/:quiz_id for noHost (quiz-details): ', quiz);
                     res.render('quiz-details', { quiz: quiz, isHost: false });
                 }
             }
 
         } else
             res.redirect('/login');
-    } catch (error) {
-        console.error('Error fetching quiz details:', error);
-        return res.status(500).json({ message: 'Internal server error' });
+    } catch (err) {
+        console.error('Error fetching quiz details:', err);
+        // Handle any errors
+        console.error(err.message);
+        const error = new Error(`Error fetching quiz details: ${err.message}!`);
+        error.status = 500;
+        next(error);
     }
 });
 
 // Get: quiz participation page
-router.get('/participate/:quiz_id', async (req, res) => {
+router.get('/participate/:quiz_id', async (req, res, next) => {
     try {
         const quizId = req.params.quiz_id;
         const quiz = await getQuizDetails(quizId);
         // console.log('Quiz details in /participate/:quiz_id: ', quiz);
         if (quiz === 'Quiz not found' || quiz === 'Quiz collection not found') {
-            return res.status(404).json({ message: 'Quiz not found' });
+            // Handle any errors
+            console.error(err.message);
+            const error = new Error(`Quiz not found ${err.message}!`);
+            error.status = 404;
+            next(error);
         }
         console.log("Quiz details in /participate/:quiz_id", quiz);
         res.render('participate', { quiz });
-    } catch (error) {
-        console.error('Error fetching quiz participation page:', error);
-        return res.status(500).json({ message: 'Internal server error', error: error });
+    } catch (err) {
+        console.error('Error fetching quiz participation page:', err);
+        // Handle any errors
+        console.error(err.message);
+        const error = new Error(`Error fetching quiz participation page: ${err}`);
+        error.status = 500;
+        next(error);
     }
 });
 
@@ -170,7 +187,6 @@ router.get('/results/:quiz_tag', async (req, res) => {
             jwt.verify(req.session.token, secret, (err, user) => {
                 if (err) {
                     console.error("Error in jwtTokenVerify:", err.message);
-                    // return res.status(401).json({ message: "Unauthorized" });
                     return res.redirect('/api/auth/logout');
                 }
                 userInfo = user || {};
@@ -188,12 +204,22 @@ router.get('/results/:quiz_tag', async (req, res) => {
         });
 
         if (!userQuizAnswers) {
-            return res.status(404).json({ message: "Quiz results not found" });
+            // Handle any errors
+            console.error(err.message);
+            const error = new Error(`Quiz not found ${err.message}!`);
+            error.status = 404;
+            next(error);
         }
 
         // 3. Retrieve the quiz data to display the results
         const quiz = await QuizCollection.findOne({ quiz_tag: req.params.quiz_tag });
-        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+        if (!quiz) {
+            // Handle any errors
+            console.error(err.message);
+            const error = new Error(`Quiz not found ${err.message}!`);
+            error.status = 404;
+            next(error);
+        }
 
         const totalQuestions = quiz.questions.length;
         const correctAnswersCount = userQuizAnswers.answers.filter((answer, index) => {
@@ -234,15 +260,19 @@ router.get('/results/:quiz_tag', async (req, res) => {
             quizTitle: quiz.title
         });
 
-    } catch (error) {
-        console.error("Error retrieving quiz results:", error);
-        res.status(500).json({ message: "Internal server error", error: error });
+    } catch (err) {
+        console.error("Error retrieving quiz results:", err);
+        // Handle any errors
+        console.error(err.message);
+        const error = new Error(`Error retrieving quiz results: ${err}!`);
+        error.status = 500;
+        next(error);
     }
 });
 
 
 // Get: user quiz list
-router.get('/my-quizzes', async (req, res) => {
+router.get('/my-quizzes', async (req, res, next) => {
     try {
         // redirect to /login if token is not found
         if (!req.session.token)
@@ -268,14 +298,18 @@ router.get('/my-quizzes', async (req, res) => {
         const quizzes = await Quiz.findAll({ where: { creator_id: userId } });
 
         res.render('my-quizzes', { quizzes });
-    } catch (error) {
-        console.error('Error fetching user quizzes:', error);
-        res.status(500).json({ message: 'Internal server error', error: error });
+    } catch (err) {
+        console.error('Error fetching user quizzes:', err);
+        // Handle any errors
+        console.error(err.message);
+        const error = new Error(`Error fetching user quizzes: ${err}!`);
+        error.status = 500;
+        next(error);
     }
 });
 
 // Get: overall result of quizzes created by the user
-router.get('/quiz/:quizTag/results', async (req, res) => {
+router.get('/quiz/:quizTag/results', async (req, res, next) => {
     try {
         const quizTag = req.params.quizTag;
 
@@ -303,7 +337,11 @@ router.get('/quiz/:quizTag/results', async (req, res) => {
         // Fetch quiz details
         const quiz = await Quiz.findOne({ where: { quizTag: quizTag } });
         if (!quiz) {
-            return res.status(404).json({ message: 'Quiz not found' });
+            // Handle any errors
+            console.error(err.message);
+            const error = new Error(`Quiz not found ${err.message}!`);
+            error.status = 404;
+            next(error);
         }
 
         // if the user is not the creator of the quiz, redirect to /app
@@ -314,7 +352,11 @@ router.get('/quiz/:quizTag/results', async (req, res) => {
         // Fetch quiz collection
         const quizCollection = await QuizCollection.findOne({ quiz_tag: quizTag });
         if (!quizCollection) {
-            return res.status(404).json({ message: 'Quiz collection not found' });
+            // Handle any errors
+            console.error(err.message);
+            const error = new Error(`Quiz Collection not found ${err.message}!`);
+            error.status = 404;
+            next(error);
         }
 
         // Fetch quiz results from your results table (assuming a UserQuizAnswersCollection table exists)
@@ -366,9 +408,13 @@ router.get('/quiz/:quizTag/results', async (req, res) => {
             participants,
             isHost: true
         });
-    } catch (error) {
-        console.error('Error fetching quiz results:', error);
-        return res.status(500).json({ message: 'Internal server error', error: error });
+    } catch (err) {
+        console.error('Error fetching quiz results:', err);
+        // Handle any errors
+        console.error(err.message);
+        const error = new Error(`Error fetching quiz results: ${err}!`);
+        error.status = 500;
+        next(error);
     }
 });
 

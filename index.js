@@ -59,6 +59,23 @@ app.use("/api", dataRoutes);
 // AUTH routes
 app.use("/api/auth", authRoutes);
 
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Log the error stack for debugging
+
+    // Redirect to the 404 page with the error message and status code
+    const status = err.status || 404;
+    res.redirect(`/404?message=${encodeURIComponent(err.message)}&status=${status}`);
+});
+
+// 404 page route
+app.get('/404', (req, res) => {
+    const message = req.query.message || 'The page you are looking for does not exist.';
+    const status = req.query.status || 404;
+    res.status(status).render('404', { message, status });
+});
+
 // Server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, (err) => {

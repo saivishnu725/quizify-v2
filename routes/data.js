@@ -41,12 +41,11 @@ router.post("/create-quiz", async (req, res) => {
         await user.save();
     }
 
-    // res.status(201).json({ message: "Quiz created successfully", quiz: req.body, userID: userInfo.id, quizId: quizId, quizTag: quizTag });
     res.redirect(`/quiz/${quizTag}`);
 });
 
 // Handle quiz submission
-router.post('/submit-quiz', async (req, res) => {
+router.post('/submit-quiz', async (req, res, next) => {
     console.log('Quiz submitted');
     console.log('Quiz body in submit-quiz: ', req.body);
 
@@ -56,7 +55,7 @@ router.post('/submit-quiz', async (req, res) => {
         jwt.verify(req.session.token, secret, (err, user) => {
             if (err) {
                 console.error("Error in jwtTokenVerify:", err.message);
-                return res.status(401).json({ message: "Unauthorized" });
+                return res.redirect('/api/auth/logout');
             }
             userInfo = user || {};
         });
@@ -71,7 +70,13 @@ router.post('/submit-quiz', async (req, res) => {
 
         // 2. Retrieve the quiz data
         const quiz = await QuizCollection.findOne({ quiz_tag: quizTag });
-        if (!quiz) return res.status(404).json({ message: "Quiz not found" });
+        if (!quiz) {
+            // Handle any errors
+            console.error(err.message);
+            const error = new Error(`Quiz not found`);
+            error.status = 404;
+            next(error);
+        }
 
         const totalQuestions = quiz.questions.length;
 
@@ -89,9 +94,12 @@ router.post('/submit-quiz', async (req, res) => {
             });
             console.log('correct answers count:', correctAnswersCount);
         } catch (error) {
-            console.log("Error in calculating correct answers:", error);
-            res.status(500).json({ message: "Internal server error", error: error });
-            return;  // won't continue
+            console.error("Error in calculating correct answers:", error);
+            // Handle any errors
+            console.error(err.message);
+            const err = new Error(`Error in calculating correct answers: ${error.message}`);
+            err.status = 500;
+            next(err);
         }
 
         const wrongAnswersCount = totalQuestions - correctAnswersCount;
@@ -116,10 +124,12 @@ router.post('/submit-quiz', async (req, res) => {
                 });
                 console.log('UserQuiz:', userQuiz);
             }
-        } catch (error) {
-            console.error("Error in saving or updating UserQuiz:", error);
-            res.status(500).json({ message: "Internal server error", error: error });
-            return;  // won't continue
+        } catch (err) {
+            console.error("Error in saving or updating UserQuiz:", err);
+            // Handle any errors
+            const error = new Error(`Error in saving or updating UserQuiz: ${err.message}`);
+            error.status = 500;
+            next(error);
         }
 
         // 5. Update or Replace in UserQuizAnswersCollection
@@ -144,18 +154,25 @@ router.post('/submit-quiz', async (req, res) => {
             });
             console.log('UserQuizAnswers:', userQuizAnswers);
             await userQuizAnswers.save();
-        } catch (error) {
-            console.error("Error in saving or updating UserQuizAnswersCollection:", error);
-            res.status(500).json({ message: "Internal server error", error: error });
-            return;  // won't continue
+        } catch (err) {
+            console.error("Error in saving or updating UserQuizAnswersCollection:", err);
+            // Handle any errors
+            console.error(err.message);
+            const error = new Error(`Error in saving or updating UserQuizAnswersCollection:", err`);
+            error.status = 500;
+            next(error);
         }
 
         // redirect to the result page
         res.redirect(`/results/${quizTag}`);
 
-    } catch (error) {
-        console.error("Error in submitting quiz:", error);
-        res.status(500).json({ message: "Internal server error", error: error });
+    } catch (err) {
+        console.error("Error in submitting quiz:", err);
+        // Handle any errors
+        console.error(err.message);
+        const error = new Error(`Error in submitting quiz: ${err}!`);
+        error.status = 500;
+        next(error);
     }
 
 });
