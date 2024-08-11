@@ -419,7 +419,6 @@ router.get('/quiz/:quizTag/results', async (req, res, next) => {
 });
 
 // TODO: Get: settings
-// TODO: Get: 404 Not Found
 // TODO: Get: user profile
 
 export default router;
