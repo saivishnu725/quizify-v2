@@ -111,6 +111,9 @@ body {
   cursor: pointer;
   height: var(--dl-size-size-xsmall);
 }
+.home_icon03 {
+  width: 28px;
+}
 .home_links1 {
   flex: 0 0 auto;
   display: flex;
@@ -342,8 +345,9 @@ body {
   justify-content: space-between;
 }
 .home_image1 {
-  height: 2rem;
+  height: 4.5rem;
   object-fit: cover;
+  margin-bottom: var(--dl-space-space-unit);
 }
 .home_text58 {
   color: var(--dl-color-gray-white);
@@ -593,9 +597,6 @@ body {
   .home_footer2 {
     padding: var(--dl-space-space-unit);
     flex-direction: column;
-  }
-  .home_image1 {
-    margin-bottom: var(--dl-space-space-unit);
   }
   .home_text58 {
     margin-left: 0px;
