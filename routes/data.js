@@ -8,6 +8,7 @@ import UserQuiz from '../models/userQuiz.js';
 import UserQuizAnswersCollection from '../models/userQuizAnswersCollection.js';
 import QuizCollection from '../models/quizCollection.js';
 import User from '../models/user.js';
+import Quiz from '../models/quiz.js';
 
 const router = Router();
 dotenv.config();
@@ -170,13 +171,72 @@ router.post('/submit-quiz', async (req, res, next) => {
         console.error("Error in submitting quiz:", err);
         // Handle any errors
         console.error(err.message);
-        const error = new Error(`Error in submitting quiz: ${err}!`);
+        const error = new Error(`Error in submitting quiz: ${err.message}!`);
         error.status = 500;
         next(error);
     }
 
 });
 
+// Delete Quiz Route
+router.get('/delete/:quiz_tag', async (req, res, next) => {
+    if (!req.session.token) {
+        return res.redirect('/login');
+    }
+
+    let userInfo = {};
+    try {
+        jwt.verify(req.session.token, secret, (err, user) => {
+            if (err) {
+                console.error("Error in jwtTokenVerify: ", err.message);
+                return res.redirect('/login');
+            }
+            userInfo = user || {};
+        });
+    } catch (err) {
+        console.error('Error in jwtTokenVerify: ', err.message);
+        return res.redirect('/api/auth/logout');
+    }
+
+    const user_id = userInfo.id;
+    const quiz_tag = req.params.quiz_tag;
+
+    try {
+        const quiz = await Quiz.findOne({ where: { quiz_tag } });
+        // if quiz is not foun
+        if (!quiz) {
+            return res.redirect('/my-quizzes?message=Quiz not found');
+        }
+
+        if (quiz.creator_id !== user_id) {
+            return res.redirect('/my-quizzes?message=You are not authorized to delete this quiz');
+        }
+        // Step 1: Delete from UserQuiz
+        await UserQuiz.destroy({ where: { quiz_tag, user_id } });
+
+        // Step 2: Decrement quiz_created in Users
+        await Users.decrement('quiz_created', { by: 1, where: { id: user_id } });
+
+        // Step 3: Delete from QuizCollection
+        await QuizCollection.deleteOne({ quiz_tag });
+
+        // Step 4: Delete from UserQuizAnswersCollection
+        await UserQuizAnswersCollection.deleteMany({ quiz_tag });
+
+        // Step 5: Delete from Quiz
+        await Quiz.destroy({ where: { quiz_tag } });
+
+        // Redirect to a success page or back to the dashboard
+        res.redirect('/app');
+    } catch (err) {
+        console.error('Error deleting quiz: ', err.message);
+        // Handle any errors
+        console.error(err.message);
+        const error = new Error(`Error in deleting quiz: ${err.message}!`);
+        error.status = 500;
+        next(error);
+    }
+});
 
 // TODO: get user full profile
 // TODO: get: user quiz details

@@ -48,7 +48,10 @@
             <p class="mb-1"><%= quiz.description %></p>
             <small>Created on: <%= new Date(quiz.creation_date).toLocaleDateString() %></small>
           </div>
-          <a href="/quiz/<%= quiz.quizTag %>/results" class="btn btn-outline-secondary">View Overall Results</a>
+          <div>
+            <a href="/quiz/<%= quiz.quizTag %>/results" class="btn btn-outline-secondary">View Overall Results</a>
+            <a href="/delete/<%= quiz.quizTag %>" class="btn btn-danger me-2">Delete</a>
+          </div>
         </li>
         <% }) %>
       </ul>
@@ -106,7 +109,6 @@
   <footer class="bg-dark text-white py-3 mt-5">
     <div class="container text-center">
       <p>&copy; <%= new Date().getFullYear() %> Quizify. All rights reserved.</p>
-      <!-- <p>The Unconcerned Ape</p> -->
     </div>
   </footer>
 
