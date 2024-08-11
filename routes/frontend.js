@@ -25,7 +25,7 @@ router.get('/', checkTokenAndRedirect, (req, res) => {
 });
 
 // GET: app page
-router.get('/app', async (req, res) => {
+router.get('/app', async (req, res, next) => {
     try {
         if (!req.session.token)
             return res.redirect('/login');
@@ -35,7 +35,7 @@ router.get('/app', async (req, res) => {
             jwt.verify(req.session.token, secret, (err, user) => {
                 if (err) {
                     console.error("Error in jwtTokenVerify: ", err.message);
-                    return res.redirect('//api/auth/logout');
+                    return res.redirect('/api/auth/logout');
                 }
                 userInfo = user || {};
             });
