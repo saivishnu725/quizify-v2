@@ -68,7 +68,7 @@ router.get('/app', async (req, res, next) => {
         console.error('Error fetching dashboard data:', err);
         // Handle any errors
         console.error(err.message);
-        const error = new Error(`Error fetching dashboard data: ${err}!`);
+        const error = new Error(`Error fetching dashboard data: ${err.message}!`);
         error.status = 500;
         next(error);
     }
@@ -123,7 +123,7 @@ router.get('/quiz/:quiz_id', async (req, res, next) => {
             console.log("UserID: ", userInfo.id);
             const userId = userInfo.id;
 
-            // TODO: get quiz details
+            // Get quiz details
             const quiz = await getQuizDetails(quizId);
             console.log('Quiz details in /quiz/:quiz_id: ', quiz);
 
@@ -172,7 +172,7 @@ router.get('/participate/:quiz_id', async (req, res, next) => {
         console.error('Error fetching quiz participation page:', err);
         // Handle any errors
         console.error(err.message);
-        const error = new Error(`Error fetching quiz participation page: ${err}`);
+        const error = new Error(`Error fetching quiz participation page: ${err.message}`);
         error.status = 500;
         next(error);
     }
@@ -264,7 +264,7 @@ router.get('/results/:quiz_tag', async (req, res) => {
         console.error("Error retrieving quiz results:", err);
         // Handle any errors
         console.error(err.message);
-        const error = new Error(`Error retrieving quiz results: ${err}!`);
+        const error = new Error(`Error retrieving quiz results: ${err.message}!`);
         error.status = 500;
         next(error);
     }
@@ -289,8 +289,7 @@ router.get('/my-quizzes', async (req, res, next) => {
             });
         } catch (err) {
             console.error('Error in jwtTokenVerify: ', err.message);
-            delete req.session.token; // remove faulty/expired token from session
-            return res.redirect('/login');
+            return res.redirect('/api/auth/logout');
         }
         const userId = userInfo.id;
 
@@ -302,7 +301,7 @@ router.get('/my-quizzes', async (req, res, next) => {
         console.error('Error fetching user quizzes:', err);
         // Handle any errors
         console.error(err.message);
-        const error = new Error(`Error fetching user quizzes: ${err}!`);
+        const error = new Error(`Error fetching user quizzes: ${err.message}!`);
         error.status = 500;
         next(error);
     }
@@ -412,7 +411,7 @@ router.get('/quiz/:quizTag/results', async (req, res, next) => {
         console.error('Error fetching quiz results:', err);
         // Handle any errors
         console.error(err.message);
-        const error = new Error(`Error fetching quiz results: ${err}!`);
+        const error = new Error(`Error fetching quiz results: ${err.message}!`);
         error.status = 500;
         next(error);
     }
